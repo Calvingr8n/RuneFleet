@@ -4,15 +4,20 @@ using System.Diagnostics;
 
 namespace OSRSClientManager.Services
 {
-    internal class ClientHelpers
+    internal class ClientHelper
     {
 
-        public static void LaunchClient(Account acc)
+        public static async void LaunchClient(Account acc)
         {
+            var filename = acc.Client?.ToString();
+            if (string.IsNullOrEmpty(filename))
+            {
+                filename = @"C:\Program Files (x86)\Jagex Launcher\Games\Old School RuneScape\Client\osclient.exe";
+            }
             var psi = new ProcessStartInfo
             {
-                //TODO: Make this swap with RuneLine client?
-                FileName = @"C:\Program Files (x86)\Jagex Launcher\Games\Old School RuneScape\Client\osclient.exe",
+                // Made to swap with any client
+                FileName = filename,
                 UseShellExecute = false
             };
             psi.EnvironmentVariables["JX_ACCESS_TOKEN"] = acc.AccessToken;
@@ -20,11 +25,21 @@ namespace OSRSClientManager.Services
             psi.EnvironmentVariables["JX_SESSION_ID"] = acc.SessionId;
             psi.EnvironmentVariables["JX_CHARACTER_ID"] = acc.CharacterId;
             psi.EnvironmentVariables["JX_DISPLAY_NAME"] = acc.DisplayName;
+            psi.Arguments = acc.Arguments?.ToString() ?? "";
 
-            
             var proc = Process.Start(psi);
-            acc.Pid = proc?.Id;
-            
+
+            if (filename.Contains("osclient", StringComparison.OrdinalIgnoreCase))
+            {
+                acc.Pid = proc?.Id;
+            }
+            else
+            {
+                // runelite
+                var childPid = await RuneLiteProcessHelper.WaitForChildRuneLiteAsync(proc.Id);
+                acc.Pid = childPid;
+            }
+
         }
 
         public static void FocusWindowByPid(int pid)
