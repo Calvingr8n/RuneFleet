@@ -1,0 +1,44 @@
+# .github/workflows/dotnet-desktop.yml
+name: Build and Package OSRS Client Manager
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # Framework-dependent (small, requires .NET installed)
+    - name: Publish framework-dependent
+      run: dotnet publish ${{ env.solution_name }} -c Release -r win-x64 --self-contained false -o ./publish/framework
+
+    - name: Upload framework-dependent artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: osrs-client-manager-framework
+        path: ./publish/framework
+
+    # Self-contained (standalone .exe, big)
+    - name: Publish self-contained (standalone)
+      run: dotnet publish ${{ env.solution_name }} -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=true -o ./publish/self-contained
+
+    - name: Upload self-contained artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: osrs-client-manager-standalone
+        path: ./publish/self-contained
