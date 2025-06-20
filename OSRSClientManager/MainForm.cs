@@ -79,7 +79,7 @@ namespace OSRSClientManager
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
             var acc = accounts[listViewAccounts.SelectedIndices[0]];
-            ClientHelpers.LaunchClient(acc);
+            ClientHelper.LaunchClient(acc);
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
@@ -92,8 +92,8 @@ namespace OSRSClientManager
             {
                 if (acc.Group?.ToString() == groupSelection.SelectedItem?.ToString())
                 {
-                    ClientHelpers.LaunchClient(acc);
-                    await Task.Delay(3000 + rand.Next(2000));
+                    ClientHelper.LaunchClient(acc);
+                    //await Task.Delay(2000 + rand.Next(1000));
                 }
                 else
                 {
@@ -110,7 +110,7 @@ namespace OSRSClientManager
             var acc = accounts[listViewAccounts.SelectedIndices[0]];
             if (acc.Pid.HasValue)
             {
-                ClientHelpers.FocusWindowByPid(acc.Pid.Value);
+                ClientHelper.FocusWindowByPid(acc.Pid.Value);
             }
         }
 
@@ -118,12 +118,12 @@ namespace OSRSClientManager
         {
             if (setWorlds.Checked)
             {
-                ClientHelpers.ReplaceWorldIds("418", "418");
+                ClientHelper.ReplaceWorldIds("418", "418");
             }
             else
             {
                 //preferences file handles the config differently
-                ClientHelpers.ReplaceWorldIds("-1", "0");
+                ClientHelper.ReplaceWorldIds("-1", "0");
             }
         }
 
@@ -225,7 +225,7 @@ namespace OSRSClientManager
             flowPanelProcesses.Controls.Clear();
         }
 
-        
+
         private bool IsOsrsClient(Process proc)
         {
             // Adjust process name check as needed for your client
@@ -264,7 +264,7 @@ namespace OSRSClientManager
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    ClientHelpers.FocusWindowByPid(acc.Pid.Value);
+                    ClientHelper.FocusWindowByPid(acc.Pid.Value);
                 }
                 else if (e.Button == MouseButtons.Right)
                 {

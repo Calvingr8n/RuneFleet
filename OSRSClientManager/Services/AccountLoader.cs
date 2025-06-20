@@ -1,9 +1,4 @@
 ﻿using OSRSClientManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OSRSClientManager.Services
 {
@@ -16,7 +11,7 @@ namespace OSRSClientManager.Services
             foreach (var line in lines.Skip(1))
             {
                 var parts = line.Split(',');
-                if (parts.Length < 6) continue;
+                if (parts.Length < 8) continue;
                 accounts.Add(new Account
                 {
                     AccessToken = parts[0],
@@ -24,7 +19,9 @@ namespace OSRSClientManager.Services
                     SessionId = parts[2],
                     DisplayName = parts[3],
                     CharacterId = parts[4],
-                    Group = parts[5]
+                    Group = parts[5],
+                    Client = parts[6],
+                    Arguments = parts[7]
                 });
             }
             return accounts;

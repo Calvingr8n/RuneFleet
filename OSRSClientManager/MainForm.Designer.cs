@@ -118,7 +118,6 @@
             MinimumSize = new Size(624, 487);
             Name = "MainForm";
             Text = "OSRS Client Manager";
-            TopMost = true;
             FormClosing += MainForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();
