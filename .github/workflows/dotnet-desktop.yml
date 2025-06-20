@@ -25,7 +25,7 @@ jobs:
 
     # Framework-dependent (small, requires .NET installed)
     - name: Publish framework-dependent
-      run: dotnet publish ${{ env.solution_name }} -c Release -r win-x64 --self-contained false -o ./publish/framework
+      run: dotnet publish OSRSClientManager.csproj -c Release -r win-x64 --self-contained false -o ./publish/framework
 
     - name: Upload framework-dependent artifact
       uses: actions/upload-artifact@v4
@@ -35,7 +35,7 @@ jobs:
 
     # Self-contained (standalone .exe, big)
     - name: Publish self-contained (standalone)
-      run: dotnet publish ${{ env.solution_name }} -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=true -o ./publish/self-contained
+      run: dotnet publish OSRSClientManager.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/self-contained
 
     - name: Upload self-contained artifact
       uses: actions/upload-artifact@v4
