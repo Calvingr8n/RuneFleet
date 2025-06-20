@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Management;
 
-namespace OSRSClientManager.Services
+namespace RuneFleet.Services
 {
     public static class RuneLiteProcessHelper
     {

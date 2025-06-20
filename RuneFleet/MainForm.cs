@@ -1,9 +1,9 @@
-﻿using OSRSClientManager.Interop;
-using OSRSClientManager.Models;
-using OSRSClientManager.Services;
+﻿using RuneFleet.Interop;
+using RuneFleet.Models;
+using RuneFleet.Services;
 using System.Diagnostics;
 
-namespace OSRSClientManager
+namespace RuneFleet
 {
     public partial class MainForm : Form
     {

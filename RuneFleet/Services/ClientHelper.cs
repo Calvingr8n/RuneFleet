@@ -1,8 +1,8 @@
-﻿using OSRSClientManager.Interop;
-using OSRSClientManager.Models;
+﻿using RuneFleet.Interop;
+using RuneFleet.Models;
 using System.Diagnostics;
 
-namespace OSRSClientManager.Services
+namespace RuneFleet.Services
 {
     internal class ClientHelper
     {

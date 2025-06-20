@@ -1,4 +1,4 @@
-﻿namespace OSRSClientManager.Models
+﻿namespace RuneFleet.Models
 {
     internal class Account
     {
