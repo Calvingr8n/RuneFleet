@@ -72,6 +72,7 @@ namespace OSRSClientManager
         private void buttonLoadPreviews_Click(object sender, EventArgs e)
         {
             RefreshProcessDisplay();
+            UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
@@ -183,8 +184,38 @@ namespace OSRSClientManager
             base.WndProc(ref m);
         }
 
-        // TODO: Refactor this to a different folder
+        // TODO: Restructure this to a different folder
+        // Refactored: Extracted logic into helper methods, improved process validation, and clarified event handling.
         private void RefreshProcessDisplay()
+        {
+            CleanupThumbnailsAndControls();
+
+            foreach (var acc in accounts)
+            {
+                if (!acc.Pid.HasValue)
+                    continue;
+
+                Process? proc = null;
+                try
+                {
+                    proc = Process.GetProcessById(acc.Pid.Value);
+                    if (proc.HasExited || !IsOsrsClient(proc))
+                    {
+                        acc.Pid = null;
+                        continue;
+                    }
+                }
+                catch (Exception)
+                {
+                    acc.Pid = null;
+                    continue;
+                }
+
+                AddProcessThumbnail(acc, proc);
+            }
+        }
+
+        private void CleanupThumbnailsAndControls()
         {
             foreach (var thumb in thumbnailMap.Values)
             {
@@ -192,76 +223,88 @@ namespace OSRSClientManager
             }
             thumbnailMap.Clear();
             flowPanelProcesses.Controls.Clear();
+        }
 
-            foreach (var acc in accounts)
+        
+        private bool IsOsrsClient(Process proc)
+        {
+            // Adjust process name check as needed for your client
+            return (proc.ProcessName.Contains("osclient", StringComparison.OrdinalIgnoreCase) ||
+                proc.ProcessName.Contains("runelite", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void AddProcessThumbnail(Account acc, Process proc)
+        {
+            var hwnd = proc.MainWindowHandle;
+            if (hwnd == IntPtr.Zero)
+                return;
+
+            var pictureBox = CreateProcessPictureBox(acc, proc);
+
+            flowPanelProcesses.Controls.Add(pictureBox);
+
+            if (NativeMethods.DwmRegisterThumbnail(this.Handle, hwnd, out IntPtr thumb) == 0)
             {
-                if (acc.Pid.HasValue)
+                SetThumbnailProperties(pictureBox, thumb);
+                thumbnailMap[hwnd] = thumb;
+            }
+        }
+
+        private PictureBox CreateProcessPictureBox(Account acc, Process proc)
+        {
+            var pictureBox = new PictureBox
+            {
+                Width = 99,
+                Height = 65,
+                BackColor = Color.Black,
+                Margin = new Padding(1)
+            };
+
+            pictureBox.MouseClick += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ClientHelpers.FocusWindowByPid(acc.Pid.Value);
+                }
+                else if (e.Button == MouseButtons.Right)
                 {
                     try
                     {
-                        // TODO: Check that the PID is OSRS client, otherwise remove reference on account
-                        var proc = Process.GetProcessById(acc.Pid.Value);
-                        if (proc.HasExited) continue;
-
-                        var hwnd = proc.MainWindowHandle;
-                        if (hwnd == IntPtr.Zero) continue;
-
-                        var pictureBox = new PictureBox
-                        {
-                            Width = 99,
-                            Height = 65,
-                            BackColor = Color.Black,
-                            Margin = new Padding(1)
-                        };
-
-                        pictureBox.MouseClick += (s, e) =>
-                        {
-                            if (e.Button == MouseButtons.Left)
-                            {
-                                // TODO: Make it so a click on the window syncs with indicie of listView
-                                ClientHelpers.FocusWindowByPid(acc.Pid.Value);
-                            }
-                            else if (e.Button == MouseButtons.Right)
-                            {
-                                proc.Kill();
-                                acc.Pid = null;
-                                RefreshProcessDisplay();
-                                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
-                            }
-                        };
-
-                        flowPanelProcesses.Controls.Add(pictureBox);
-
-                        int result = NativeMethods.DwmRegisterThumbnail(this.Handle, hwnd, out IntPtr thumb);
-                        if (result == 0)
-                        {
-                            Point screenPos = pictureBox.PointToScreen(Point.Empty);
-                            Point formPos = this.PointToClient(screenPos);
-
-                            var props = new DWM_THUMBNAIL_PROPERTIES
-                            {
-                                dwFlags = DwmFlags.DWM_TNP_RECTDESTINATION | DwmFlags.DWM_TNP_VISIBLE | DwmFlags.DWM_TNP_OPACITY,
-                                fVisible = true,
-                                opacity = 255,
-                                rcDestination = new RECT
-                                {
-                                    Left = formPos.X,
-                                    Top = formPos.Y,
-                                    Right = formPos.X + pictureBox.Width,
-                                    Bottom = formPos.Y + pictureBox.Height
-                                }
-                            };
-
-                            NativeMethods.DwmUpdateThumbnailProperties(thumb, ref props);
-                            thumbnailMap[hwnd] = thumb;
-                        }
+                        proc.Kill();
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Console.WriteLine("RefreshProcessDisplay: " + ex.ToString());
+                        // Optionally log or handle process kill exceptions
                     }
+                    acc.Pid = null;
+                    RefreshProcessDisplay();
+                    UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
                 }
-            }
+            };
+
+            return pictureBox;
+        }
+
+        private void SetThumbnailProperties(PictureBox pictureBox, IntPtr thumb)
+        {
+            Point screenPos = pictureBox.PointToScreen(Point.Empty);
+            Point formPos = this.PointToClient(screenPos);
+
+            var props = new DWM_THUMBNAIL_PROPERTIES
+            {
+                dwFlags = DwmFlags.DWM_TNP_RECTDESTINATION | DwmFlags.DWM_TNP_VISIBLE | DwmFlags.DWM_TNP_OPACITY,
+                fVisible = true,
+                opacity = 255,
+                rcDestination = new RECT
+                {
+                    Left = formPos.X,
+                    Top = formPos.Y,
+                    Right = formPos.X + pictureBox.Width,
+                    Bottom = formPos.Y + pictureBox.Height
+                }
+            };
+
+            NativeMethods.DwmUpdateThumbnailProperties(thumb, ref props);
         }
 
     }
