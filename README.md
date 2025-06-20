@@ -1,4 +1,4 @@
-# OSRSClientManager
+# RuneFleet
 A powerful Windows application for managing and launching multiple Old School RuneScape clients simultaneously. Features include live thumbnail previews, client focus switching, grouped account management, and streamlined multilogging control.
 
 ## Setup Guide
