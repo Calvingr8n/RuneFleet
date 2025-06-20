@@ -1,4 +1,6 @@
-namespace OSRSClientManager
+using RuneFleet;
+
+namespace RuneFleet
 {
     static class Program
     {

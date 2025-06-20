@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace OSRSClientManager.Interop
+namespace RuneFleet.Interop
 {
 
     [StructLayout(LayoutKind.Sequential)]

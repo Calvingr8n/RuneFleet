@@ -1,6 +1,6 @@
-﻿using OSRSClientManager.Models;
+﻿using RuneFleet.Models;
 
-namespace OSRSClientManager.Services
+namespace RuneFleet.Services
 {
     internal class AccountLoader
     {

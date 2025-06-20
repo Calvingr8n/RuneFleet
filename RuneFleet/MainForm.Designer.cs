@@ -1,4 +1,4 @@
-﻿namespace OSRSClientManager
+﻿namespace RuneFleet
 {
     partial class MainForm
     {
@@ -117,7 +117,7 @@
             MaximizeBox = false;
             MinimumSize = new Size(624, 487);
             Name = "MainForm";
-            Text = "OSRS Client Manager";
+            Text = "RuneFleet";
             FormClosing += MainForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();
