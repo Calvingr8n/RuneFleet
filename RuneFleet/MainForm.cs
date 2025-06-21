@@ -84,7 +84,12 @@ namespace RuneFleet
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
-            var acc = accounts[listViewAccounts.SelectedIndices[0]];
+            //var acc = accounts[listViewAccounts.SelectedIndices[0]];
+            var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
+            // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
+            // This is a known issue with the current implementation.
+            // This is complex and ugly, but it works for now.
+            var acc = accounts.FirstOrDefault(a => a.DisplayName == selectedAccount);
             ClientHelper.LaunchClient(acc);
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
@@ -114,7 +119,7 @@ namespace RuneFleet
         private void listViewAccounts_ItemActivate(object sender, EventArgs e)
         {
             var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
-            // BUG: If the name of the character is not unique, this will not work correctly.
+            // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
             var pid = int.Parse(accounts.FirstOrDefault(acc => acc.DisplayName == selectedAccount)?.Pid?.ToString() ?? "0");
