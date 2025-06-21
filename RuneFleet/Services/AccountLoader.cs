@@ -19,7 +19,7 @@ namespace RuneFleet.Services
                     SessionId = parts[2],
                     DisplayName = parts[3],
                     CharacterId = parts[4],
-                    Group = parts[5],
+                    Group = parts[5].Split(";"),
                     Client = parts[6],
                     Arguments = parts[7]
                 });

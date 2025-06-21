@@ -55,9 +55,9 @@
             // 
             // buttonLaunchAll
             // 
-            buttonLaunchAll.Location = new Point(371, 12);
+            buttonLaunchAll.Location = new Point(407, 12);
             buttonLaunchAll.Name = "buttonLaunchAll";
-            buttonLaunchAll.Size = new Size(130, 30);
+            buttonLaunchAll.Size = new Size(94, 30);
             buttonLaunchAll.TabIndex = 2;
             buttonLaunchAll.Text = "Launch Group";
             buttonLaunchAll.Click += buttonLaunchAll_Click;
@@ -98,9 +98,9 @@
             // 
             groupSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             groupSelection.FormattingEnabled = true;
-            groupSelection.Location = new Point(297, 17);
+            groupSelection.Location = new Point(297, 15);
             groupSelection.Name = "groupSelection";
-            groupSelection.Size = new Size(68, 23);
+            groupSelection.Size = new Size(104, 23);
             groupSelection.TabIndex = 6;
             groupSelection.SelectedValueChanged += groupSelection_SelectedValueChanged;
             // 

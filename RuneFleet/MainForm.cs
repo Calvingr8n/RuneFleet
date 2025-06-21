@@ -43,13 +43,16 @@ namespace RuneFleet
         // Modifies visible account list based on group
         private void UpdateListView(string group)
         {
+            //
             listViewAccounts.Items.Clear();
             foreach (var acc in accounts)
             {
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
-                if (group == "All" || group == acc.Group?.ToString())
+                if (group == "All" 
+                    || acc.Group.Contains(group))
                 {
+                    ;
                     listViewAccounts.Items.Add(item);
                 }
             }
@@ -58,12 +61,17 @@ namespace RuneFleet
         // Sets values of group drop down based on accounts loaded
         private void UpdateGroupView()
         {
-            groupSelection.Items.Clear();
-            var groups = accounts.Select(p => p.Group).Distinct();
+            groupSelection.Items.Clear();            
+            var groups = accounts
+                .Where(p => p.Group != null)
+                .SelectMany(p => p.Group)
+                .Where(g => !string.IsNullOrWhiteSpace(g))
+                .Distinct();
+            
             groupSelection.Items.Add("All");
             foreach (var group in groups)
             {
-                groupSelection.Items.Add(group?.ToString() ?? "");
+                groupSelection.Items.Add(group);
             }
             groupSelection.SelectedIndex = 0;
 
@@ -90,7 +98,7 @@ namespace RuneFleet
             var rand = new Random();
             foreach (var acc in accounts)
             {
-                if (acc.Group?.ToString() == groupSelection.SelectedItem?.ToString())
+                if (acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
                     ClientHelper.LaunchClient(acc);
                     //await Task.Delay(2000 + rand.Next(1000));
