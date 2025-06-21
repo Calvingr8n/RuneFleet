@@ -26,6 +26,7 @@
             refreshPane = new Button();
             setWorlds = new CheckBox();
             groupSelection = new ComboBox();
+            buttonWatchCharacters = new Button();
             SuspendLayout();
             // 
             // listViewAccounts
@@ -36,7 +37,7 @@
             listViewAccounts.Location = new Point(12, 12);
             listViewAccounts.MultiSelect = false;
             listViewAccounts.Name = "listViewAccounts";
-            listViewAccounts.Size = new Size(174, 428);
+            listViewAccounts.Size = new Size(174, 399);
             listViewAccounts.TabIndex = 0;
             listViewAccounts.UseCompatibleStateImageBehavior = false;
             listViewAccounts.View = View.Details;
@@ -105,9 +106,20 @@
             groupSelection.TabIndex = 6;
             groupSelection.SelectedValueChanged += groupSelection_SelectedValueChanged;
             // 
+            // buttonWatchCharacters
+            // 
+            buttonWatchCharacters.Location = new Point(12, 417);
+            buttonWatchCharacters.Name = "buttonWatchCharacters";
+            buttonWatchCharacters.Size = new Size(174, 23);
+            buttonWatchCharacters.TabIndex = 7;
+            buttonWatchCharacters.Text = "Start Watch for Characters";
+            buttonWatchCharacters.UseVisualStyleBackColor = true;
+            buttonWatchCharacters.Click += buttonWatchCharacters_Click;
+            // 
             // MainForm
             // 
             ClientSize = new Size(608, 448);
+            Controls.Add(buttonWatchCharacters);
             Controls.Add(groupSelection);
             Controls.Add(setWorlds);
             Controls.Add(refreshPane);
@@ -127,5 +139,6 @@
         private Button refreshPane;
         private CheckBox setWorlds;
         private ComboBox groupSelection;
+        private Button buttonWatchCharacters;
     }
 }

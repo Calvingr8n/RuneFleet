@@ -16,6 +16,9 @@ namespace RuneFleet
         private const int HOTKEY_ID_PGDN = 1;
         private const int HOTKEY_ID_PGUP = 2;
         private const int HOTKEY_ID_DEL = 3;
+        // Character accounts.csv watch/generation
+        private CancellationTokenSource watchTokenSource;
+        private Task watchTask;
 
 
         public MainForm()
@@ -59,13 +62,13 @@ namespace RuneFleet
         // Sets values of group drop down based on accounts loaded
         private void UpdateGroupView()
         {
-            groupSelection.Items.Clear();            
+            groupSelection.Items.Clear();
             var groups = accounts
                 .Where(p => p.Group != null)
                 .SelectMany(p => p.Group)
                 .Where(g => !string.IsNullOrWhiteSpace(g))
                 .Distinct();
-            
+
             groupSelection.Items.Add("All");
             foreach (var group in groups)
             {
@@ -317,6 +320,86 @@ namespace RuneFleet
             };
 
             NativeMethods.DwmUpdateThumbnailProperties(thumb, ref props);
+        }
+
+        private void buttonWatchCharacters_Click(object sender, EventArgs e)
+        {
+            if (watchTokenSource == null)
+            {
+                // Start watching
+                watchTokenSource = new CancellationTokenSource();
+                //pictureBoxLoading.Visible = true;
+                buttonWatchCharacters.Text = "Stop Watch for Characters";
+                watchTask = Task.Run(() => WatchForClientsAsync(watchTokenSource.Token));
+            }
+            else
+            {
+                // Stop watching
+                watchTokenSource.Cancel();
+                watchTokenSource = null;
+                //pictureBoxLoading.Visible = false;
+                buttonWatchCharacters.Text = "Start Watch for Characters";
+                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+            }
+        }
+
+        private async Task WatchForClientsAsync(CancellationToken token)
+        {
+            var knownPids = Process.GetProcesses()
+                .Where(p => p.ProcessName.Equals("RuneLite", StringComparison.OrdinalIgnoreCase) ||
+                            p.ProcessName.Equals("osclient", StringComparison.OrdinalIgnoreCase))
+                .Select(p => p.Id)
+                .ToHashSet();
+
+            while (!token.IsCancellationRequested)
+            {
+                var newClients = Process.GetProcesses()
+                    .Where(p => (p.ProcessName.Equals("RuneLite", StringComparison.OrdinalIgnoreCase) ||
+                                 p.ProcessName.Equals("osclient", StringComparison.OrdinalIgnoreCase)) &&
+                                 !knownPids.Contains(p.Id))
+                    .ToList();
+
+                foreach (var proc in newClients)
+                {
+                    knownPids.Add(proc.Id);
+
+                    try
+                    {
+                        var env = EnvReader.ReadEnvironmentVariablesFromProcess(proc.Id);
+                        string sessionId = env.ContainsKey("JX_SESSION_ID") ? env["JX_SESSION_ID"] : null;
+                        string displayName = env.ContainsKey("JX_SESSION_ID") ? env["JX_DISPLAY_NAME"] : null;
+                        string characterId = env.ContainsKey("JX_SESSION_ID") ? env["JX_CHARACTER_ID"] : null;
+                        string clientPath = proc.MainModule?.FileName ?? "";
+                        /*
+                        string sessionId = GetEnvVariable(proc, "JX_SESSION_ID");
+                        string displayName = GetEnvVariable(proc, "JX_DISPLAY_NAME");
+                        string characterId = GetEnvVariable(proc, "JX_CHARACTER_ID");
+                        
+                        */
+
+                        if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
+                        {
+                            var acc = new Account
+                            {
+                                SessionId = sessionId,
+                                DisplayName = displayName,
+                                CharacterId = characterId,
+                                AccessToken = "", 
+                                RefreshToken = "",
+                                Client = clientPath,
+                                Group = ["All"],
+                                Arguments = ""
+                            };
+
+                            accounts.Add(acc);
+                            File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},New;,{acc.Client},{acc.Arguments}\r\n");
+                        }
+                    }
+                    catch { }
+                }
+
+                await Task.Delay(2000, token);
+            }
         }
 
     }
