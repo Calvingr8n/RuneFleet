@@ -49,10 +49,8 @@ namespace RuneFleet
             {
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
-                if (group == "All" 
-                    || acc.Group.Contains(group))
+                if (group == "All" || acc.Group.Contains(group))
                 {
-                    ;
                     listViewAccounts.Items.Add(item);
                 }
             }
