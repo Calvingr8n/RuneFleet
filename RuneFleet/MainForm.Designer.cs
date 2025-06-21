@@ -34,6 +34,7 @@
             listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID });
             listViewAccounts.FullRowSelect = true;
             listViewAccounts.Location = new Point(12, 12);
+            listViewAccounts.MultiSelect = false;
             listViewAccounts.Name = "listViewAccounts";
             listViewAccounts.Size = new Size(174, 428);
             listViewAccounts.TabIndex = 0;
@@ -118,6 +119,7 @@
             MinimumSize = new Size(624, 487);
             Name = "MainForm";
             Text = "RuneFleet";
+            TopMost = true;
             FormClosing += MainForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();
