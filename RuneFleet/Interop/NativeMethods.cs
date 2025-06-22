@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Microsoft.Win32.SafeHandles;
+using System.Runtime.InteropServices;
 
 namespace RuneFleet.Interop
 {
@@ -26,6 +27,23 @@ namespace RuneFleet.Interop
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmUpdateThumbnailProperties(nint hThumb, ref DWM_THUMBNAIL_PROPERTIES props);
+
+
+        // Used in EnvReader.cs to get process information
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern SafeProcessHandle OpenProcess(ProcessAccessFlags access, bool inheritHandle, int processId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool ReadProcessMemory(SafeProcessHandle hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out IntPtr lpNumberOfBytesRead);
+
+        [DllImport("ntdll.dll")]
+        public static extern int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass, ref PROCESS_BASIC_INFORMATION64 pbi, int cb, out int returnLength);
+
+        [DllImport("ntdll.dll")]
+        public static extern int NtQueryInformationProcess32(IntPtr processHandle, int processInformationClass, ref PROCESS_BASIC_INFORMATION32 pbi, int cb, out int returnLength);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool IsWow64Process(IntPtr hProcess, out bool wow64Process);
 
     }
 }

@@ -78,12 +78,14 @@ namespace RuneFleet
 
         }
 
+        // Refreshes the process display and updates the list view with the selected group.
         private void buttonLoadPreviews_Click(object sender, EventArgs e)
         {
             RefreshProcessDisplay();
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
+        // Launches the selected account in the list view.
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
@@ -97,6 +99,7 @@ namespace RuneFleet
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
+        // Launches all accounts in the selected group.
         private async void buttonLaunchAll_Click(object sender, EventArgs e)
         {
             listViewAccounts.Enabled = false;
@@ -119,6 +122,7 @@ namespace RuneFleet
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
+        // Handles the item activation in the list view, which is triggered when an item is double-clicked or activated.
         private void listViewAccounts_ItemActivate(object sender, EventArgs e)
         {
             var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
@@ -129,6 +133,8 @@ namespace RuneFleet
             ClientHelper.FocusWindowByPid(pid);
         }
 
+        /*
+         * Was intended to set the world IDs in the preferences file.
         private void setWorlds_CheckedChanged(object sender, EventArgs e)
         {
             if (setWorlds.Checked)
@@ -141,15 +147,16 @@ namespace RuneFleet
                 ClientHelper.ReplaceWorldIds("-1", "0");
             }
         }
+        */
 
+        // Handles the selection change in the group selection dropdown.
         private void groupSelection_SelectedValueChanged(object sender, EventArgs e)
         {
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
-
-
         // TODO: Refactor this to a different folder?
+        // Handles the window messages to process hotkeys for navigation.
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == WM_HOTKEY)
@@ -201,6 +208,7 @@ namespace RuneFleet
 
         // TODO: Restructure this to a different folder
         // Refactored: Extracted logic into helper methods, improved process validation, and clarified event handling.
+        // Refreshes the process display by checking running processes and updating thumbnails.
         private void RefreshProcessDisplay()
         {
             CleanupThumbnailsAndControls();
@@ -230,6 +238,8 @@ namespace RuneFleet
             }
         }
 
+        // Cleans up thumbnails and controls to prevent memory leaks and UI clutter.
+        // TODO: Refactor this to a different folder
         private void CleanupThumbnailsAndControls()
         {
             foreach (var thumb in thumbnailMap.Values)
@@ -240,14 +250,18 @@ namespace RuneFleet
             flowPanelProcesses.Controls.Clear();
         }
 
-
+        // Checks if the process is an OSRS client based on its name.
+        // TODO: Refactor this to a different folder
+        // This method can be extended to include other clients if needed.
+        // TODO: Use this in other functions that check for OSRS clients ex. WatchForClientsAsync.
         private bool IsOsrsClient(Process proc)
         {
-            // Adjust process name check as needed for your client
             return (proc.ProcessName.Contains("osclient", StringComparison.OrdinalIgnoreCase) ||
                 proc.ProcessName.Contains("runelite", StringComparison.OrdinalIgnoreCase));
         }
 
+        // Adds a thumbnail for the process in the flow panel.
+        // TODO: Refactor this to a different folder
         private void AddProcessThumbnail(Account acc, Process proc)
         {
             var hwnd = proc.MainWindowHandle;
@@ -265,6 +279,8 @@ namespace RuneFleet
             }
         }
 
+        // Creates a PictureBox for the process thumbnail with event handling for clicks.
+        // TODO: Refactor this to a different folder
         private PictureBox CreateProcessPictureBox(Account acc, Process proc)
         {
             var pictureBox = new PictureBox
@@ -300,6 +316,8 @@ namespace RuneFleet
             return pictureBox;
         }
 
+        // Sets the properties for the thumbnail, including position and visibility.
+        // TODO: Refactor this to a different folder
         private void SetThumbnailProperties(PictureBox pictureBox, IntPtr thumb)
         {
             Point screenPos = pictureBox.PointToScreen(Point.Empty);
@@ -322,27 +340,45 @@ namespace RuneFleet
             NativeMethods.DwmUpdateThumbnailProperties(thumb, ref props);
         }
 
+        // Starts or stops watching for new character processes based on the button state.
         private void buttonWatchCharacters_Click(object sender, EventArgs e)
         {
             if (watchTokenSource == null)
             {
+                // Disable other controls
+                groupSelection.Enabled = false;
+                buttonLaunchAll.Enabled = false;
+                refreshPane.Enabled = false;
+                listViewAccounts.Enabled = false;
+
                 // Start watching
                 watchTokenSource = new CancellationTokenSource();
-                //pictureBoxLoading.Visible = true;
-                buttonWatchCharacters.Text = "Stop Watch for Characters";
+                pictureLoading.Visible = true;
+                labelLoading.Visible = true;
+                buttonWatchCharacters.Text = "Stop Import Helper";
+                // Watching for new client processes
                 watchTask = Task.Run(() => WatchForClientsAsync(watchTokenSource.Token));
             }
             else
             {
+                // Enable other controls
+                groupSelection.Enabled = true;
+                buttonLaunchAll.Enabled = true;
+                refreshPane.Enabled = true;
+                listViewAccounts.Enabled = true;
                 // Stop watching
                 watchTokenSource.Cancel();
                 watchTokenSource = null;
-                //pictureBoxLoading.Visible = false;
-                buttonWatchCharacters.Text = "Start Watch for Characters";
+                pictureLoading.Visible = false;
+                labelLoading.Visible = false;
+                buttonWatchCharacters.Text = "Start Import Helper";
                 UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
             }
         }
 
+        // Watches for new RuneLite or OSRS client processes and updates the accounts list.
+        // This method runs in a separate task and checks for new processes every 2 seconds.
+        // TODO: Refactor this to a different folder
         private async Task WatchForClientsAsync(CancellationToken token)
         {
             var knownPids = Process.GetProcesses()
@@ -370,12 +406,6 @@ namespace RuneFleet
                         string displayName = env.ContainsKey("JX_SESSION_ID") ? env["JX_DISPLAY_NAME"] : null;
                         string characterId = env.ContainsKey("JX_SESSION_ID") ? env["JX_CHARACTER_ID"] : null;
                         string clientPath = proc.MainModule?.FileName ?? "";
-                        /*
-                        string sessionId = GetEnvVariable(proc, "JX_SESSION_ID");
-                        string displayName = GetEnvVariable(proc, "JX_DISPLAY_NAME");
-                        string characterId = GetEnvVariable(proc, "JX_CHARACTER_ID");
-                        
-                        */
 
                         if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
                         {
@@ -384,24 +414,34 @@ namespace RuneFleet
                                 SessionId = sessionId,
                                 DisplayName = displayName,
                                 CharacterId = characterId,
-                                AccessToken = "", 
+                                AccessToken = "",
                                 RefreshToken = "",
                                 Client = clientPath,
-                                Group = ["All"],
+                                Group = [],
                                 Arguments = ""
                             };
 
                             accounts.Add(acc);
-                            File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},New;,{acc.Client},{acc.Arguments}\r\n");
+                            File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},Captured;,{acc.Client},{acc.Arguments}\r\n");
                         }
                     }
                     catch { }
                 }
-
                 await Task.Delay(2000, token);
             }
         }
 
+        private void checkTopMost_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkTopMost.Checked)
+            {
+                MainForm.ActiveForm.TopMost = true;
+            }
+            else
+            {
+                MainForm.ActiveForm.TopMost = false;
+            }
+        }
     }
 
 }

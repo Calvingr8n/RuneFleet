@@ -6,7 +6,7 @@ namespace RuneFleet.Services
 {
     internal class ClientHelper
     {
-
+        // This method launches the client with the provided account information.
         public static async void LaunchClient(Account acc)
         {
             var filename = acc.Client?.ToString();
@@ -42,6 +42,7 @@ namespace RuneFleet.Services
 
         }
 
+        // This method focuses the window of the client by its process ID.
         public static void FocusWindowByPid(int pid)
         {
             try
@@ -56,6 +57,8 @@ namespace RuneFleet.Services
             }
         }
 
+        // TODO: Extend this to work with multiple clients, not just OSRS.
+        // This method modifies the preferences_client.dat file to set the default and last world IDs.
         public static void ReplaceWorldIds(string defaltWorld, string lastWorld)
         {
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

@@ -1,5 +1,6 @@
 ﻿namespace RuneFleet.Models
 {
+    // This class represents an account with various properties related to RuneScape accounts.
     internal class Account
     {
         public string? AccessToken { get; set; }
