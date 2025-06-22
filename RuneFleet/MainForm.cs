@@ -110,7 +110,8 @@ namespace RuneFleet
                 if (acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
                     ClientHelper.LaunchClient(acc);
-                    //await Task.Delay(2000 + rand.Next(1000));
+                    // otherwise it causes some clients to fail launch
+                    await Task.Delay(1000 + rand.Next(1000));
                 }
                 else
                 {
