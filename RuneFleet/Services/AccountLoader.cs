@@ -2,6 +2,7 @@
 
 namespace RuneFleet.Services
 {
+    // This class is responsible for loading account data from a CSV file.
     internal class AccountLoader
     {
         public static List<Account> LoadFromCsv(string path)
@@ -33,8 +34,10 @@ namespace RuneFleet.Services
             {
                 Console.WriteLine($"Error loading accounts from CSV: {ex.Message}");
                 File.WriteAllText(path, "JX_ACCESS_TOKEN,JX_REFRESH_TOKEN,JX_SESSION_ID,JX_DISPLAY_NAME,JX_CHARACTER_ID,Group,Client,Arguments\r\n");
-                MessageBox.Show("Failed to load accounts. An accounts.csv template has been created for you. Read the guide for more info.", 
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Couldn't find accounts.csv. \r\n" +
+                                "A template has been created for you in the same folder. \r\n" +
+                                "Read the guide for more info.", 
+                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return new List<Account>();
             }
         }
