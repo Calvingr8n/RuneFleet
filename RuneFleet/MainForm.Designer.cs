@@ -24,8 +24,12 @@
             buttonLaunchAll = new Button();
             flowPanelProcesses = new FlowLayoutPanel();
             refreshPane = new Button();
-            setWorlds = new CheckBox();
             groupSelection = new ComboBox();
+            buttonWatchCharacters = new Button();
+            checkTopMost = new CheckBox();
+            pictureLoading = new PictureBox();
+            labelLoading = new Label();
+            ((System.ComponentModel.ISupportInitialize)pictureLoading).BeginInit();
             SuspendLayout();
             // 
             // listViewAccounts
@@ -33,10 +37,10 @@
             listViewAccounts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID });
             listViewAccounts.FullRowSelect = true;
-            listViewAccounts.Location = new Point(12, 12);
+            listViewAccounts.Location = new Point(12, 44);
             listViewAccounts.MultiSelect = false;
             listViewAccounts.Name = "listViewAccounts";
-            listViewAccounts.Size = new Size(174, 428);
+            listViewAccounts.Size = new Size(174, 409);
             listViewAccounts.TabIndex = 0;
             listViewAccounts.UseCompatibleStateImageBehavior = false;
             listViewAccounts.View = View.Details;
@@ -58,7 +62,7 @@
             // 
             buttonLaunchAll.Location = new Point(407, 12);
             buttonLaunchAll.Name = "buttonLaunchAll";
-            buttonLaunchAll.Size = new Size(94, 30);
+            buttonLaunchAll.Size = new Size(94, 26);
             buttonLaunchAll.TabIndex = 2;
             buttonLaunchAll.Text = "Launch Group";
             buttonLaunchAll.Click += buttonLaunchAll_Click;
@@ -69,63 +73,105 @@
             flowPanelProcesses.AutoScroll = true;
             flowPanelProcesses.AutoSize = true;
             flowPanelProcesses.BorderStyle = BorderStyle.FixedSingle;
-            flowPanelProcesses.Location = new Point(192, 48);
+            flowPanelProcesses.Location = new Point(192, 44);
             flowPanelProcesses.Name = "flowPanelProcesses";
-            flowPanelProcesses.Size = new Size(406, 392);
+            flowPanelProcesses.Size = new Size(406, 409);
             flowPanelProcesses.TabIndex = 3;
             // 
             // refreshPane
             // 
             refreshPane.Location = new Point(507, 12);
             refreshPane.Name = "refreshPane";
-            refreshPane.Size = new Size(91, 30);
+            refreshPane.Size = new Size(91, 26);
             refreshPane.TabIndex = 4;
             refreshPane.Text = "Load Previews";
             refreshPane.UseVisualStyleBackColor = true;
             refreshPane.Click += buttonLoadPreviews_Click;
             // 
-            // setWorlds
-            // 
-            setWorlds.AutoSize = true;
-            setWorlds.Location = new Point(192, 19);
-            setWorlds.Name = "setWorlds";
-            setWorlds.Size = new Size(99, 19);
-            setWorlds.TabIndex = 5;
-            setWorlds.Text = "Default World";
-            setWorlds.UseVisualStyleBackColor = true;
-            setWorlds.CheckedChanged += setWorlds_CheckedChanged;
-            // 
             // groupSelection
             // 
             groupSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             groupSelection.FormattingEnabled = true;
-            groupSelection.Location = new Point(297, 15);
+            groupSelection.Location = new Point(288, 14);
             groupSelection.Name = "groupSelection";
-            groupSelection.Size = new Size(104, 23);
+            groupSelection.Size = new Size(113, 23);
             groupSelection.TabIndex = 6;
             groupSelection.SelectedValueChanged += groupSelection_SelectedValueChanged;
             // 
+            // buttonWatchCharacters
+            // 
+            buttonWatchCharacters.Location = new Point(12, 12);
+            buttonWatchCharacters.Name = "buttonWatchCharacters";
+            buttonWatchCharacters.Size = new Size(174, 26);
+            buttonWatchCharacters.TabIndex = 7;
+            buttonWatchCharacters.Text = "Start Import Helper";
+            buttonWatchCharacters.UseVisualStyleBackColor = true;
+            buttonWatchCharacters.Click += buttonWatchCharacters_Click;
+            // 
+            // checkTopMost
+            // 
+            checkTopMost.AutoSize = true;
+            checkTopMost.Checked = true;
+            checkTopMost.CheckState = CheckState.Checked;
+            checkTopMost.Location = new Point(192, 17);
+            checkTopMost.Name = "checkTopMost";
+            checkTopMost.Size = new Size(90, 19);
+            checkTopMost.TabIndex = 8;
+            checkTopMost.Text = "Keep on top";
+            checkTopMost.UseVisualStyleBackColor = true;
+            checkTopMost.CheckedChanged += checkTopMost_CheckedChanged;
+            // 
+            // pictureLoading
+            // 
+            pictureLoading.Image = Properties.Resources.Dots_Loader;
+            pictureLoading.Location = new Point(13, 187);
+            pictureLoading.Name = "pictureLoading";
+            pictureLoading.Size = new Size(171, 122);
+            pictureLoading.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureLoading.TabIndex = 9;
+            pictureLoading.TabStop = false;
+            pictureLoading.Visible = false;
+            // 
+            // labelLoading
+            // 
+            labelLoading.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            labelLoading.Location = new Point(13, 68);
+            labelLoading.MaximumSize = new Size(172, 0);
+            labelLoading.MinimumSize = new Size(0, 371);
+            labelLoading.Name = "labelLoading";
+            labelLoading.Size = new Size(171, 384);
+            labelLoading.TabIndex = 10;
+            labelLoading.Text = resources.GetString("labelLoading.Text");
+            labelLoading.Visible = false;
+            // 
             // MainForm
             // 
-            ClientSize = new Size(608, 448);
+            ClientSize = new Size(608, 461);
+            Controls.Add(pictureLoading);
+            Controls.Add(labelLoading);
+            Controls.Add(checkTopMost);
+            Controls.Add(buttonWatchCharacters);
             Controls.Add(groupSelection);
-            Controls.Add(setWorlds);
             Controls.Add(refreshPane);
             Controls.Add(listViewAccounts);
             Controls.Add(buttonLaunchAll);
             Controls.Add(flowPanelProcesses);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MinimumSize = new Size(624, 487);
+            MinimumSize = new Size(624, 500);
             Name = "MainForm";
             Text = "RuneFleet";
             TopMost = true;
             FormClosing += MainForm_FormClosing;
+            ((System.ComponentModel.ISupportInitialize)pictureLoading).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
         private Button refreshPane;
-        private CheckBox setWorlds;
         private ComboBox groupSelection;
+        private Button buttonWatchCharacters;
+        private CheckBox checkTopMost;
+        private PictureBox pictureLoading;
+        private Label labelLoading;
     }
 }

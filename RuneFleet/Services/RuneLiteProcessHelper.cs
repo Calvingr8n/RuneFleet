@@ -6,6 +6,7 @@ namespace RuneFleet.Services
     public static class RuneLiteProcessHelper
     {
         // Runelite spawns a child process which is the pid we need for preview management
+        // Asynchronously wait for the child RuneLite process to start
         public static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, long timeoutMs = 60000, int pollIntervalMs = 200)
         {
             int waited = 0;
@@ -23,6 +24,7 @@ namespace RuneFleet.Services
             return null; // timeout
         }
 
+        // Synchronously get the child RuneLite process ID
         private static int? GetChildRuneLitePid(int parentPid)
         {
             // Query WMI for child RuneLite.exe processes
