@@ -50,7 +50,7 @@
             // 
             // columnHeaderDisplayName
             // 
-            columnHeaderDisplayName.Text = "Account";
+            columnHeaderDisplayName.Text = "Character";
             columnHeaderDisplayName.Width = 95;
             // 
             // columnHeaderPID
@@ -124,7 +124,7 @@
             // pictureLoading
             // 
             pictureLoading.Image = Properties.Resources.Dots_Loader;
-            pictureLoading.Location = new Point(13, 187);
+            pictureLoading.Location = new Point(13, 172);
             pictureLoading.Name = "pictureLoading";
             pictureLoading.Size = new Size(171, 122);
             pictureLoading.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -135,11 +135,11 @@
             // labelLoading
             // 
             labelLoading.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            labelLoading.Location = new Point(13, 68);
-            labelLoading.MaximumSize = new Size(172, 0);
-            labelLoading.MinimumSize = new Size(0, 371);
+            labelLoading.Location = new Point(13, 45);
+            labelLoading.MaximumSize = new Size(171, 0);
+            labelLoading.MinimumSize = new Size(0, 407);
             labelLoading.Name = "labelLoading";
-            labelLoading.Size = new Size(171, 384);
+            labelLoading.Size = new Size(171, 407);
             labelLoading.TabIndex = 10;
             labelLoading.Text = resources.GetString("labelLoading.Text");
             labelLoading.Visible = false;
