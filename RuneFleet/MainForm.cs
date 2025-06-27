@@ -156,53 +156,12 @@ namespace RuneFleet
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
-        // TODO: Refactor this to a different folder?
         // Handles the window messages to process hotkeys for navigation.
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_HOTKEY)
-            {
-                int id = m.WParam.ToInt32();
-
-                if (listViewAccounts.Items.Count == 0)
-                    return;
-
-                int currentIndex;
-                if (listViewAccounts.SelectedIndices.Count > 0)
-                {
-                    currentIndex = listViewAccounts.SelectedIndices[0];
-                    listViewAccounts.Items[currentIndex].Selected = false;
-                    listViewAccounts.Items[currentIndex].Focused = false;
-                }
-                else
-                {
-                    currentIndex = -1;
-                }
-
-                int newIndex = 0;
-
-                if (id == HOTKEY_ID_PGDN)
-                {
-                    newIndex = (currentIndex + 1) % listViewAccounts.Items.Count;
-                }
-                else if (id == HOTKEY_ID_PGUP)
-                {
-                    newIndex = (currentIndex - 1 + listViewAccounts.Items.Count) % listViewAccounts.Items.Count;
-                }
-                else if (id == HOTKEY_ID_DEL)
-                {
-                    newIndex = 0;
-                }
-
-                // Simulate click
-                listViewAccounts.Items[newIndex].Selected = true;
-                listViewAccounts.Select();
-                listViewAccounts.Focus();
-
-
-                listViewAccounts.Items[newIndex].Focused = true;
-                listViewAccounts_ItemActivate(this, EventArgs.Empty); // triggers "click"
-            }
+            HotkeyNavigator.Handle(ref m, WM_HOTKEY, listViewAccounts,
+                HOTKEY_ID_PGDN, HOTKEY_ID_PGUP, HOTKEY_ID_DEL,
+                () => listViewAccounts_ItemActivate(this, EventArgs.Empty));
 
             base.WndProc(ref m);
         }
