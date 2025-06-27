@@ -1,12 +1,11 @@
 ﻿using RuneFleet.Interop;
-using RuneFleet.Models;
 using RuneFleet.Services;
 
 namespace RuneFleet
 {
     public partial class MainForm : Form
     {
-        private List<Account> accounts = new();
+        private readonly AccountManager accountManager = new();
         // Service handling process thumbnails and client watching
         private ProcessDisplayService processService;
         // Keybinds
@@ -24,14 +23,14 @@ namespace RuneFleet
         {
             InitializeComponent();
             // Load and show information from CSV file
-            accounts = AccountLoader.LoadFromCsv("accounts.csv");
+            accountManager.Load("accounts.csv");
             UpdateGroupView();
             UpdateListView("All");
 
             processService = new ProcessDisplayService(
                 this,
                 flowPanelProcesses,
-                accounts,
+                accountManager.Accounts,
                 () => UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All"));
 
             // Handling the keybinds
@@ -53,11 +52,11 @@ namespace RuneFleet
         {
             //
             listViewAccounts.Items.Clear();
-            foreach (var acc in accounts)
+            foreach (var acc in accountManager.Accounts)
             {
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
-                if (group == "All" || acc.Group.Contains(group))
+                if (group == "All" || (acc.Group != null && acc.Group.Contains(group)))
                 {
                     listViewAccounts.Items.Add(item);
                 }
@@ -68,11 +67,7 @@ namespace RuneFleet
         private void UpdateGroupView()
         {
             groupSelection.Items.Clear();
-            var groups = accounts
-                .Where(p => p.Group != null)
-                .SelectMany(p => p.Group)
-                .Where(g => !string.IsNullOrWhiteSpace(g))
-                .Distinct();
+            var groups = accountManager.GetGroups();
 
             groupSelection.Items.Add("All");
             foreach (var group in groups)
@@ -94,13 +89,15 @@ namespace RuneFleet
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
-            //var acc = accounts[listViewAccounts.SelectedIndices[0]];
             var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
             // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var acc = accounts.FirstOrDefault(a => a.DisplayName == selectedAccount);
-            ClientHelper.LaunchClient(acc);
+            var acc = accountManager.GetAccountByDisplayName(selectedAccount);
+            if (acc != null)
+            {
+                ClientHelper.LaunchClient(acc);
+            }
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
@@ -110,9 +107,9 @@ namespace RuneFleet
             listViewAccounts.Enabled = false;
             groupSelection.Enabled = false;
             var rand = new Random();
-            foreach (var acc in accounts)
+            foreach (var acc in accountManager.Accounts)
             {
-                if (acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
+                if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
                     ClientHelper.LaunchClient(acc);
                     // otherwise it causes some clients to fail launch
@@ -135,7 +132,7 @@ namespace RuneFleet
             // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var pid = int.Parse(accounts.FirstOrDefault(acc => acc.DisplayName == selectedAccount)?.Pid?.ToString() ?? "0");
+            var pid = int.Parse(accountManager.GetAccountByDisplayName(selectedAccount)?.Pid?.ToString() ?? "0");
             ClientHelper.FocusWindowByPid(pid);
         }
 
