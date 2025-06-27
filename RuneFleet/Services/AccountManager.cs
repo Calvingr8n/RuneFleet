@@ -68,21 +68,20 @@ namespace RuneFleet.Services
         }
         }
 
-        private sealed class AccountMap : ClassMap<Account>
+    // Change the access modifier of AccountMap from private to internal
+    internal sealed class AccountMap : ClassMap<Account>
+    {
+        public AccountMap()
         {
-            public AccountMap()
-            {
-                Map(m => m.AccessToken).Name("JX_ACCESS_TOKEN");
-                Map(m => m.RefreshToken).Name("JX_REFRESH_TOKEN");
-                Map(m => m.SessionId).Name("JX_SESSION_ID");
-                Map(m => m.DisplayName).Name("JX_DISPLAY_NAME");
-                Map(m => m.CharacterId).Name("JX_CHARACTER_ID");
-                Map(m => m.Client).Name("Client");
-                Map(m => m.Arguments).Name("Arguments");
-                Map(m => m.Group).Convert(args =>
-                    args.Row.GetField<string>("Group")?.Split(';', StringSplitOptions.RemoveEmptyEntries));
-            }
+            Map(m => m.AccessToken).Name("JX_ACCESS_TOKEN");
+            Map(m => m.RefreshToken).Name("JX_REFRESH_TOKEN");
+            Map(m => m.SessionId).Name("JX_SESSION_ID");
+            Map(m => m.DisplayName).Name("JX_DISPLAY_NAME");
+            Map(m => m.CharacterId).Name("JX_CHARACTER_ID");
+            Map(m => m.Client).Name("Client");
+            Map(m => m.Arguments).Name("Arguments");
+            Map(m => m.Group).Convert(args =>
+                args.Row.GetField<string>("Group")?.Split(';', StringSplitOptions.RemoveEmptyEntries));
         }
     }
-}
-
+    }
