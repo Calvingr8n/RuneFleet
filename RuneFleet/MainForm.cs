@@ -404,8 +404,8 @@ namespace RuneFleet
                     {
                         var env = EnvReader.ReadEnvironmentVariablesFromProcess(proc.Id);
                         string sessionId = env.ContainsKey("JX_SESSION_ID") ? env["JX_SESSION_ID"] : null;
-                        string displayName = env.ContainsKey("JX_SESSION_ID") ? env["JX_DISPLAY_NAME"] : null;
-                        string characterId = env.ContainsKey("JX_SESSION_ID") ? env["JX_CHARACTER_ID"] : null;
+                        string displayName = env.ContainsKey("JX_DISPLAY_NAME") ? env["JX_DISPLAY_NAME"] : null;
+                        string characterId = env.ContainsKey("JX_CHARACTER_ID") ? env["JX_CHARACTER_ID"] : null;
                         string clientPath = proc.MainModule?.FileName ?? "";
 
                         if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
