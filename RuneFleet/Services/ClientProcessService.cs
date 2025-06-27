@@ -81,7 +81,7 @@ internal class ClientProcessService : IDisposable
             }
             catch (Exception ex)
             {
-                Console.WriteLine("FocusClient: " + ex);
+                Trace.TraceError($"FocusClient failed: {ex}");
             }
         }
 
@@ -107,8 +107,9 @@ internal class ClientProcessService : IDisposable
                         continue;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Trace.TraceWarning($"Unable to read process {acc.Pid}: {ex.Message}");
                     acc.Pid = null;
                     continue;
                 }
@@ -170,7 +171,10 @@ internal class ClientProcessService : IDisposable
                     {
                         proc.Kill();
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError($"Failed to kill process {proc.Id}: {ex.Message}");
+                    }
                     acc.Pid = null;
                     RefreshProcessDisplay();
                     refreshListView();
@@ -248,7 +252,10 @@ internal class ClientProcessService : IDisposable
                             File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},Captured;,{acc.Client},{acc.Arguments}\r\n");
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError($"Failed to capture process {proc.Id}: {ex}");
+                    }
                 }
                 await Task.Delay(2000, token);
             }
@@ -284,7 +291,10 @@ internal class ClientProcessService : IDisposable
                     if (!childProc.HasExited)
                         return childPid;
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Failed to inspect child process {childPid}: {ex.Message}");
+                }
             }
             return null;
         }
