@@ -5,9 +5,7 @@ namespace RuneFleet
 {
     public partial class MainForm : Form
     {
-        private readonly AccountManager accountManager = new();
-        // Service handling client processes and thumbnails
-        private ClientProcessService clientService;
+        private readonly ClientController clientController;
         // Keybinds
         private const int WM_HOTKEY = 0x0312;
         // Unique IDs for each keybind
@@ -22,16 +20,14 @@ namespace RuneFleet
         public MainForm()
         {
             InitializeComponent();
-            // Load and show information from CSV file
-            accountManager.Load("accounts.csv");
-            UpdateGroupView();
-            UpdateListView("All");
-
-            clientService = new ClientProcessService(
+            clientController = new ClientController(
                 this,
                 flowPanelProcesses,
-                accountManager.Accounts,
                 () => UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All"));
+
+            clientController.LoadAccounts("accounts.csv");
+            UpdateGroupView();
+            UpdateListView("All");
 
             // Handling the keybinds
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGDN, 0, (uint)Keys.PageDown);
@@ -52,7 +48,7 @@ namespace RuneFleet
         {
             //
             listViewAccounts.Items.Clear();
-            foreach (var acc in accountManager.Accounts)
+            foreach (var acc in clientController.Accounts)
             {
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
@@ -67,7 +63,7 @@ namespace RuneFleet
         private void UpdateGroupView()
         {
             groupSelection.Items.Clear();
-            var groups = accountManager.GetGroups();
+            var groups = clientController.GetGroups();
 
             groupSelection.Items.Add("All");
             foreach (var group in groups)
@@ -81,7 +77,7 @@ namespace RuneFleet
         // Refreshes the process display and updates the list view with the selected group.
         private void buttonLoadPreviews_Click(object sender, EventArgs e)
         {
-            clientService.RefreshProcessDisplay();
+            clientController.RefreshClients();
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
@@ -93,10 +89,10 @@ namespace RuneFleet
             // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var acc = accountManager.GetAccountByDisplayName(selectedAccount);
+            var acc = clientController.GetAccountByDisplayName(selectedAccount);
             if (acc != null)
             {
-                clientService.LaunchClient(acc);
+                clientController.LaunchClient(acc);
             }
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
@@ -107,11 +103,11 @@ namespace RuneFleet
             listViewAccounts.Enabled = false;
             groupSelection.Enabled = false;
             var rand = new Random();
-            foreach (var acc in accountManager.Accounts)
+            foreach (var acc in clientController.Accounts)
             {
                 if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
-                    clientService.LaunchClient(acc);
+                    clientController.LaunchClient(acc);
                     // otherwise it causes some clients to fail launch
                     await Task.Delay(1000 + rand.Next(1000));
                 }
@@ -132,8 +128,8 @@ namespace RuneFleet
             // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var pid = int.Parse(accountManager.GetAccountByDisplayName(selectedAccount)?.Pid?.ToString() ?? "0");
-            clientService.FocusClient(pid);
+            var pid = int.Parse(clientController.GetAccountByDisplayName(selectedAccount)?.Pid?.ToString() ?? "0");
+            clientController.FocusClient(pid);
         }
 
         /*
@@ -186,7 +182,7 @@ namespace RuneFleet
                 labelLoading.Visible = true;
                 buttonWatchCharacters.Text = "Stop Import Helper";
                 // Watching for new client processes
-                watchTask = Task.Run(() => clientService.WatchForClientsAsync(watchTokenSource.Token));
+                watchTask = Task.Run(() => clientController.WatchForClientsAsync(watchTokenSource.Token));
             }
             else
             {
