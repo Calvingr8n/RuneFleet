@@ -52,6 +52,32 @@ namespace RuneFleet.Tests.Services
                     File.Delete(tempFile);
             }
         }
+
+        [Fact]
+        public void LoadQuotedValues_Works()
+        {
+            string tempFile = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllText(tempFile,
+                    "JX_ACCESS_TOKEN,JX_REFRESH_TOKEN,JX_SESSION_ID,JX_DISPLAY_NAME,JX_CHARACTER_ID,Group,Client,Arguments\n" +
+                    "\"atk1\",\"ref1\",\"sid1\",\"display,1\",\"char1\",\"g1;g2\",\"client1\",\"args,1\"\n");
+
+                var manager = new AccountManager();
+                manager.Load(tempFile);
+
+                Assert.Single(manager.Accounts);
+                var account = manager.Accounts[0];
+                Assert.Equal("display,1", account.DisplayName);
+                Assert.Equal("args,1", account.Arguments);
+                Assert.Equal(new[] { "g1", "g2" }, account.Group);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+        }
     }
 }
 

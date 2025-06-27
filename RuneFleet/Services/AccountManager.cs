@@ -1,4 +1,7 @@
 using RuneFleet.Models;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
 
 namespace RuneFleet.Services
 {
@@ -18,26 +21,16 @@ namespace RuneFleet.Services
         {
             try
             {
-                var accounts = new List<Account>();
-                var lines = File.ReadAllLines(path);
-
-                foreach (var line in lines.Skip(1))
+                using var reader = new StreamReader(path);
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    var parts = line.Split(',');
-                    if (parts.Length < 8) continue;
-                    accounts.Add(new Account
-                    {
-                        AccessToken = parts[0],
-                        RefreshToken = parts[1],
-                        SessionId = parts[2],
-                        DisplayName = parts[3],
-                        CharacterId = parts[4],
-                        Group = parts[5].Split(";"),
-                        Client = parts[6],
-                        Arguments = parts[7]
-                    });
-                }
-                return accounts;
+                    MissingFieldFound = null,
+                    HeaderValidated = null,
+                    BadDataFound = null
+                };
+                using var csv = new CsvReader(reader, config);
+                csv.Context.RegisterClassMap<AccountMap>();
+                return csv.GetRecords<Account>().ToList();
             }
             catch (FileNotFoundException ex)
             {
@@ -72,6 +65,23 @@ namespace RuneFleet.Services
         public Account? GetAccountByDisplayName(string displayName)
         {
             return Accounts.FirstOrDefault(a => a.DisplayName == displayName);
+        }
+        }
+
+        private sealed class AccountMap : ClassMap<Account>
+        {
+            public AccountMap()
+            {
+                Map(m => m.AccessToken).Name("JX_ACCESS_TOKEN");
+                Map(m => m.RefreshToken).Name("JX_REFRESH_TOKEN");
+                Map(m => m.SessionId).Name("JX_SESSION_ID");
+                Map(m => m.DisplayName).Name("JX_DISPLAY_NAME");
+                Map(m => m.CharacterId).Name("JX_CHARACTER_ID");
+                Map(m => m.Client).Name("Client");
+                Map(m => m.Arguments).Name("Arguments");
+                Map(m => m.Group).Convert(args =>
+                    args.Row.GetField<string>("Group")?.Split(';', StringSplitOptions.RemoveEmptyEntries));
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="System.Management" Version="9.0.6" />
     <PackageReference Include="websocketsharp.core" Version="1.0.1" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
   </ItemGroup>
 
   <ItemGroup>
