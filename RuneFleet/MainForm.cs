@@ -6,8 +6,8 @@ namespace RuneFleet
     public partial class MainForm : Form
     {
         private readonly AccountManager accountManager = new();
-        // Service handling process thumbnails and client watching
-        private ProcessDisplayService processService;
+        // Service handling client processes and thumbnails
+        private ClientProcessService clientService;
         // Keybinds
         private const int WM_HOTKEY = 0x0312;
         // Unique IDs for each keybind
@@ -27,7 +27,7 @@ namespace RuneFleet
             UpdateGroupView();
             UpdateListView("All");
 
-            processService = new ProcessDisplayService(
+            clientService = new ClientProcessService(
                 this,
                 flowPanelProcesses,
                 accountManager.Accounts,
@@ -81,7 +81,7 @@ namespace RuneFleet
         // Refreshes the process display and updates the list view with the selected group.
         private void buttonLoadPreviews_Click(object sender, EventArgs e)
         {
-            processService.RefreshProcessDisplay();
+            clientService.RefreshProcessDisplay();
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
@@ -96,7 +96,7 @@ namespace RuneFleet
             var acc = accountManager.GetAccountByDisplayName(selectedAccount);
             if (acc != null)
             {
-                ClientHelper.LaunchClient(acc);
+                clientService.LaunchClient(acc);
             }
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
@@ -111,7 +111,7 @@ namespace RuneFleet
             {
                 if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
-                    ClientHelper.LaunchClient(acc);
+                    clientService.LaunchClient(acc);
                     // otherwise it causes some clients to fail launch
                     await Task.Delay(1000 + rand.Next(1000));
                 }
@@ -133,7 +133,7 @@ namespace RuneFleet
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
             var pid = int.Parse(accountManager.GetAccountByDisplayName(selectedAccount)?.Pid?.ToString() ?? "0");
-            ClientHelper.FocusWindowByPid(pid);
+            clientService.FocusClient(pid);
         }
 
         /*
@@ -142,12 +142,12 @@ namespace RuneFleet
         {
             if (setWorlds.Checked)
             {
-                ClientHelper.ReplaceWorldIds("418", "418");
+                ClientProcessService.ReplaceWorldIds("418", "418");
             }
             else
             {
                 //preferences file handles the config differently
-                ClientHelper.ReplaceWorldIds("-1", "0");
+                ClientProcessService.ReplaceWorldIds("-1", "0");
             }
         }
         */
@@ -186,7 +186,7 @@ namespace RuneFleet
                 labelLoading.Visible = true;
                 buttonWatchCharacters.Text = "Stop Import Helper";
                 // Watching for new client processes
-                watchTask = Task.Run(() => processService.WatchForClientsAsync(watchTokenSource.Token));
+                watchTask = Task.Run(() => clientService.WatchForClientsAsync(watchTokenSource.Token));
             }
             else
             {
