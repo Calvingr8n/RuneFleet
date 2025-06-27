@@ -45,6 +45,8 @@ namespace RuneFleet
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGDN);
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGUP);
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_DEL);
+
+            clientService.Dispose();
         }
 
         // Modifies visible account list based on group
