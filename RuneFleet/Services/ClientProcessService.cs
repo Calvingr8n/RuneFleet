@@ -14,7 +14,7 @@ namespace RuneFleet.Services
     /// Provides client process operations such as launching, focusing,
     /// thumbnail management and environment capture.
     /// </summary>
-    internal class ClientProcessService
+internal class ClientProcessService : IDisposable
     {
         private readonly Form form;
         private readonly FlowLayoutPanel panel;
@@ -421,6 +421,11 @@ namespace RuneFleet.Services
                 throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to read pointer.");
 
             return new IntPtr(BitConverter.ToInt32(buffer, 0));
+        }
+
+        public void Dispose()
+        {
+            CleanupThumbnailsAndControls();
         }
     }
 }
