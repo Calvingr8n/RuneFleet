@@ -23,6 +23,25 @@ namespace RuneFleet.Tests.Services
                 manager.Load(tempFile);
 
                 Assert.Equal(2, manager.Accounts.Count);
+
+                Assert.Equal("atk1", manager.Accounts[0].AccessToken);
+                Assert.Equal("ref1", manager.Accounts[0].RefreshToken);
+                Assert.Equal("sid1", manager.Accounts[0].SessionId);
+                Assert.Equal("display1", manager.Accounts[0].DisplayName);
+                Assert.Equal("char1", manager.Accounts[0].CharacterId);
+                Assert.Equal(new[] { "g1", "g2" }, manager.Accounts[0].Group);
+                Assert.Equal("client1", manager.Accounts[0].Client);
+                Assert.Equal("args1", manager.Accounts[0].Arguments);
+
+                Assert.Equal("atk2", manager.Accounts[1].AccessToken);
+                Assert.Equal("ref2", manager.Accounts[1].RefreshToken);
+                Assert.Equal("sid2", manager.Accounts[1].SessionId);
+                Assert.Equal("display2", manager.Accounts[1].DisplayName);
+                Assert.Equal("char2", manager.Accounts[1].CharacterId);
+                Assert.Equal(new[] { "g2" }, manager.Accounts[1].Group);
+                Assert.Equal("client2", manager.Accounts[1].Client);
+                Assert.Equal("args2", manager.Accounts[1].Arguments);
+
                 var groups = manager.GetGroups().ToList();
                 Assert.Contains("g1", groups);
                 Assert.Contains("g2", groups);
