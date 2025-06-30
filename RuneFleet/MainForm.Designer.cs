@@ -6,7 +6,6 @@
         private System.Windows.Forms.ListView listViewAccounts;
         private System.Windows.Forms.ColumnHeader columnHeaderDisplayName;
         private System.Windows.Forms.ColumnHeader columnHeaderPID;
-        private System.Windows.Forms.Button buttonLaunchAll;
         private System.Windows.Forms.FlowLayoutPanel flowPanelProcesses;
 
         protected override void Dispose(bool disposing)
@@ -21,18 +20,27 @@
             listViewAccounts = new ListView();
             columnHeaderDisplayName = new ColumnHeader();
             columnHeaderPID = new ColumnHeader();
-            buttonLaunchAll = new Button();
             flowPanelProcesses = new FlowLayoutPanel();
-            refreshPane = new Button();
             groupSelection = new ComboBox();
-            buttonWatchCharacters = new Button();
-            checkTopMost = new CheckBox();
-            pictureLoading = new PictureBox();
             labelLoading = new Label();
             numericClientScale = new NumericUpDown();
-            checkBoxScale = new CheckBox();
-            ((System.ComponentModel.ISupportInitialize)pictureLoading).BeginInit();
+            toolStrip1 = new ToolStrip();
+            toolStripSeparator6 = new ToolStripSeparator();
+            toolStripButtonTop = new ToolStripButton();
+            toolStripSeparator5 = new ToolStripSeparator();
+            toolStripButtonImport = new ToolStripButton();
+            toolStripProgressBar1 = new ToolStripProgressBar();
+            toolStripSeparator1 = new ToolStripSeparator();
+            toolStripButtonLaunch = new ToolStripButton();
+            toolStripSeparator2 = new ToolStripSeparator();
+            toolStripButtonRefresh = new ToolStripButton();
+            toolStripSeparator3 = new ToolStripSeparator();
+            toolStripButtonScale = new ToolStripButton();
+            toolStripSeparator4 = new ToolStripSeparator();
+            toolStripButtonHelp = new ToolStripButton();
+            toolStripSeparator7 = new ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)numericClientScale).BeginInit();
+            toolStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // listViewAccounts
@@ -40,10 +48,10 @@
             listViewAccounts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID });
             listViewAccounts.FullRowSelect = true;
-            listViewAccounts.Location = new Point(12, 44);
+            listViewAccounts.Location = new Point(11, 28);
             listViewAccounts.MultiSelect = false;
             listViewAccounts.Name = "listViewAccounts";
-            listViewAccounts.Size = new Size(174, 409);
+            listViewAccounts.Size = new Size(174, 425);
             listViewAccounts.TabIndex = 0;
             listViewAccounts.UseCompatibleStateImageBehavior = false;
             listViewAccounts.View = View.Details;
@@ -61,88 +69,35 @@
             columnHeaderPID.Text = "Process";
             columnHeaderPID.Width = 55;
             // 
-            // buttonLaunchAll
-            // 
-            buttonLaunchAll.Location = new Point(443, 12);
-            buttonLaunchAll.Name = "buttonLaunchAll";
-            buttonLaunchAll.Size = new Size(94, 26);
-            buttonLaunchAll.TabIndex = 2;
-            buttonLaunchAll.Text = "Launch Group";
-            buttonLaunchAll.Click += buttonLaunchAll_Click;
-            // 
             // flowPanelProcesses
             // 
             flowPanelProcesses.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flowPanelProcesses.AutoScroll = true;
             flowPanelProcesses.AutoSize = true;
             flowPanelProcesses.BorderStyle = BorderStyle.FixedSingle;
-            flowPanelProcesses.Location = new Point(192, 44);
+            flowPanelProcesses.Location = new Point(192, 28);
             flowPanelProcesses.Name = "flowPanelProcesses";
-            flowPanelProcesses.Size = new Size(406, 409);
+            flowPanelProcesses.Size = new Size(406, 425);
             flowPanelProcesses.TabIndex = 3;
-            // 
-            // refreshPane
-            // 
-            refreshPane.Location = new Point(543, 12);
-            refreshPane.Name = "refreshPane";
-            refreshPane.Size = new Size(55, 26);
-            refreshPane.TabIndex = 4;
-            refreshPane.Text = "Refresh";
-            refreshPane.UseVisualStyleBackColor = true;
-            refreshPane.Click += buttonLoadPreviews_Click;
             // 
             // groupSelection
             // 
             groupSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             groupSelection.FormattingEnabled = true;
-            groupSelection.Location = new Point(302, 14);
+            groupSelection.Location = new Point(135, 322);
             groupSelection.Name = "groupSelection";
-            groupSelection.Size = new Size(135, 23);
+            groupSelection.Size = new Size(88, 23);
             groupSelection.TabIndex = 6;
             groupSelection.SelectedValueChanged += groupSelection_SelectedValueChanged;
-            // 
-            // buttonWatchCharacters
-            // 
-            buttonWatchCharacters.Location = new Point(64, 12);
-            buttonWatchCharacters.Name = "buttonWatchCharacters";
-            buttonWatchCharacters.Size = new Size(122, 26);
-            buttonWatchCharacters.TabIndex = 7;
-            buttonWatchCharacters.Text = "Start Import Helper";
-            buttonWatchCharacters.UseVisualStyleBackColor = true;
-            buttonWatchCharacters.Click += buttonWatchCharacters_Click;
-            // 
-            // checkTopMost
-            // 
-            checkTopMost.AutoSize = true;
-            checkTopMost.Checked = true;
-            checkTopMost.CheckState = CheckState.Checked;
-            checkTopMost.Location = new Point(13, 17);
-            checkTopMost.Name = "checkTopMost";
-            checkTopMost.Size = new Size(45, 19);
-            checkTopMost.TabIndex = 8;
-            checkTopMost.Text = "Top";
-            checkTopMost.UseVisualStyleBackColor = true;
-            checkTopMost.CheckedChanged += checkTopMost_CheckedChanged;
-            // 
-            // pictureLoading
-            // 
-            pictureLoading.Image = Properties.Resources.Dots_Loader;
-            pictureLoading.Location = new Point(13, 172);
-            pictureLoading.Name = "pictureLoading";
-            pictureLoading.Size = new Size(171, 122);
-            pictureLoading.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureLoading.TabIndex = 9;
-            pictureLoading.TabStop = false;
-            pictureLoading.Visible = false;
             // 
             // labelLoading
             // 
             labelLoading.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            labelLoading.Location = new Point(13, 45);
+            labelLoading.Location = new Point(12, 29);
             labelLoading.MaximumSize = new Size(171, 0);
             labelLoading.MinimumSize = new Size(0, 407);
             labelLoading.Name = "labelLoading";
-            labelLoading.Size = new Size(171, 407);
+            labelLoading.Size = new Size(171, 423);
             labelLoading.TabIndex = 10;
             labelLoading.Text = resources.GetString("labelLoading.Text");
             labelLoading.Visible = false;
@@ -151,37 +106,148 @@
             // 
             numericClientScale.DecimalPlaces = 1;
             numericClientScale.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            numericClientScale.Location = new Point(251, 14);
+            numericClientScale.Location = new Point(168, 293);
             numericClientScale.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             numericClientScale.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             numericClientScale.Name = "numericClientScale";
             numericClientScale.Size = new Size(45, 23);
             numericClientScale.TabIndex = 11;
+            numericClientScale.TextAlign = HorizontalAlignment.Center;
             numericClientScale.Value = new decimal(new int[] { 10, 0, 0, 65536 });
             // 
-            // checkBoxScale
+            // toolStrip1
             // 
-            checkBoxScale.AutoSize = true;
-            checkBoxScale.Location = new Point(192, 17);
-            checkBoxScale.Name = "checkBoxScale";
-            checkBoxScale.Size = new Size(53, 19);
-            checkBoxScale.TabIndex = 12;
-            checkBoxScale.Text = "Scale";
-            checkBoxScale.UseVisualStyleBackColor = true;
+            toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(608, 25);
+            toolStrip1.TabIndex = 13;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator6
+            // 
+            toolStripSeparator6.Name = "toolStripSeparator6";
+            toolStripSeparator6.Size = new Size(6, 25);
+            // 
+            // toolStripButtonTop
+            // 
+            toolStripButtonTop.Checked = true;
+            toolStripButtonTop.CheckOnClick = true;
+            toolStripButtonTop.CheckState = CheckState.Checked;
+            toolStripButtonTop.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonTop.Image = (Image)resources.GetObject("toolStripButtonTop.Image");
+            toolStripButtonTop.ImageTransparentColor = Color.Magenta;
+            toolStripButtonTop.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonTop.Name = "toolStripButtonTop";
+            toolStripButtonTop.Size = new Size(23, 23);
+            toolStripButtonTop.Text = "Keep Window On Top";
+            toolStripButtonTop.ToolTipText = "Keep this window on top.";
+            toolStripButtonTop.Click += toolStripButtonTop_Click;
+            // 
+            // toolStripSeparator5
+            // 
+            toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStripSeparator5.Size = new Size(6, 25);
+            // 
+            // toolStripButtonImport
+            // 
+            toolStripButtonImport.CheckOnClick = true;
+            toolStripButtonImport.Image = (Image)resources.GetObject("toolStripButtonImport.Image");
+            toolStripButtonImport.ImageTransparentColor = Color.Magenta;
+            toolStripButtonImport.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonImport.Name = "toolStripButtonImport";
+            toolStripButtonImport.Size = new Size(63, 23);
+            toolStripButtonImport.Text = "Import";
+            toolStripButtonImport.ToolTipText = "Imports Jagex Launcher character launch actions to this utility.";
+            toolStripButtonImport.Click += toolStripButtonImport_Click;
+            // 
+            // toolStripProgressBar1
+            // 
+            toolStripProgressBar1.Margin = new Padding(1);
+            toolStripProgressBar1.MarqueeAnimationSpeed = 25;
+            toolStripProgressBar1.Name = "toolStripProgressBar1";
+            toolStripProgressBar1.Size = new Size(100, 23);
+            toolStripProgressBar1.Step = 1;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 25);
+            // 
+            // toolStripButtonLaunch
+            // 
+            toolStripButtonLaunch.Image = (Image)resources.GetObject("toolStripButtonLaunch.Image");
+            toolStripButtonLaunch.ImageTransparentColor = Color.Magenta;
+            toolStripButtonLaunch.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonLaunch.Name = "toolStripButtonLaunch";
+            toolStripButtonLaunch.Size = new Size(102, 23);
+            toolStripButtonLaunch.Text = "Launch Group";
+            toolStripButtonLaunch.ToolTipText = "Launches selected client groups based on configuration of accounts.csv file.";
+            toolStripButtonLaunch.Click += toolStripButtonLaunch_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(6, 25);
+            // 
+            // toolStripButtonRefresh
+            // 
+            toolStripButtonRefresh.Image = (Image)resources.GetObject("toolStripButtonRefresh.Image");
+            toolStripButtonRefresh.ImageTransparentColor = Color.Magenta;
+            toolStripButtonRefresh.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonRefresh.Name = "toolStripButtonRefresh";
+            toolStripButtonRefresh.Size = new Size(66, 23);
+            toolStripButtonRefresh.Text = "Refresh";
+            toolStripButtonRefresh.ToolTipText = "Refreshes below client preview pane.";
+            toolStripButtonRefresh.Click += toolStripButtonRefresh_Click;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(6, 25);
+            // 
+            // toolStripButtonScale
+            // 
+            toolStripButtonScale.CheckOnClick = true;
+            toolStripButtonScale.Image = (Image)resources.GetObject("toolStripButtonScale.Image");
+            toolStripButtonScale.ImageTransparentColor = Color.Magenta;
+            toolStripButtonScale.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonScale.Name = "toolStripButtonScale";
+            toolStripButtonScale.Size = new Size(54, 23);
+            toolStripButtonScale.Text = "Scale";
+            toolStripButtonScale.ToolTipText = "Overrides scale settings for RuneLite.";
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new Size(6, 25);
+            // 
+            // toolStripButtonHelp
+            // 
+            toolStripButtonHelp.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonHelp.Image = (Image)resources.GetObject("toolStripButtonHelp.Image");
+            toolStripButtonHelp.ImageTransparentColor = Color.Magenta;
+            toolStripButtonHelp.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonHelp.Name = "toolStripButtonHelp";
+            toolStripButtonHelp.Size = new Size(23, 23);
+            toolStripButtonHelp.Text = "Help";
+            toolStripButtonHelp.ToolTipText = "Displays credits and assistance info.";
+            toolStripButtonHelp.Click += toolStripButtonHelp_Click;
+            // 
+            // toolStripSeparator7
+            // 
+            toolStripSeparator7.Name = "toolStripSeparator7";
+            toolStripSeparator7.Size = new Size(6, 25);
             // 
             // MainForm
             // 
             ClientSize = new Size(608, 461);
-            Controls.Add(checkBoxScale);
             Controls.Add(numericClientScale);
-            Controls.Add(pictureLoading);
-            Controls.Add(labelLoading);
-            Controls.Add(checkTopMost);
-            Controls.Add(buttonWatchCharacters);
             Controls.Add(groupSelection);
-            Controls.Add(refreshPane);
+            Controls.Add(toolStrip1);
+            Controls.Add(labelLoading);
             Controls.Add(listViewAccounts);
-            Controls.Add(buttonLaunchAll);
             Controls.Add(flowPanelProcesses);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -190,18 +256,29 @@
             Text = "RuneFleet";
             TopMost = true;
             FormClosing += MainForm_FormClosing;
-            ((System.ComponentModel.ISupportInitialize)pictureLoading).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericClientScale).EndInit();
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
-        private Button refreshPane;
         private ComboBox groupSelection;
-        private Button buttonWatchCharacters;
-        private CheckBox checkTopMost;
-        private PictureBox pictureLoading;
         private Label labelLoading;
         private NumericUpDown numericClientScale;
-        private CheckBox checkBoxScale;
+        private ToolStrip toolStrip1;
+        private ToolStripButton toolStripButtonRefresh;
+        private ToolStripButton toolStripButtonLaunch;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripButton toolStripButtonImport;
+        private ToolStripProgressBar toolStripProgressBar1;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton toolStripButtonScale;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripButton toolStripButtonTop;
+        private ToolStripButton toolStripButtonHelp;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripSeparator toolStripSeparator7;
     }
 }
