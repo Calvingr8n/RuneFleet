@@ -33,6 +33,9 @@ namespace RuneFleet
                 accountManager.Accounts,
                 () => UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All"));
 
+            flowPanelProcesses.Scroll += flowPanelProcesses_Scroll;
+            flowPanelProcesses.Resize += flowPanelProcesses_Resize;
+
             // Handling the keybinds
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGDN, 0, (uint)Keys.PageDown);
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGUP, 0, (uint)Keys.PageUp);
@@ -218,6 +221,16 @@ namespace RuneFleet
             {
                 MainForm.ActiveForm.TopMost = false;
             }
+        }
+
+        private void flowPanelProcesses_Scroll(object sender, ScrollEventArgs e)
+        {
+            clientService.UpdateThumbnailPositions();
+        }
+
+        private void flowPanelProcesses_Resize(object sender, EventArgs e)
+        {
+            clientService.UpdateThumbnailPositions();
         }
     }
 

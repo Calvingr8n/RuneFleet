@@ -21,6 +21,7 @@ internal class ClientProcessService : IDisposable
         private readonly List<Account> accounts;
         private readonly Action refreshListView;
         private readonly Dictionary<IntPtr, IntPtr> thumbnailMap = new();
+        private readonly Dictionary<IntPtr, PictureBox> pictureMap = new();
 
         public ClientProcessService(Form form,
                                     FlowLayoutPanel panel,
@@ -124,6 +125,7 @@ internal class ClientProcessService : IDisposable
                 NativeMethods.DwmUnregisterThumbnail(thumb);
 
             thumbnailMap.Clear();
+            pictureMap.Clear();
             panel.Controls.Clear();
         }
 
@@ -146,6 +148,7 @@ internal class ClientProcessService : IDisposable
             {
                 SetThumbnailProperties(pictureBox, thumb);
                 thumbnailMap[hwnd] = thumb;
+                pictureMap[hwnd] = pictureBox;
             }
         }
 
@@ -204,6 +207,17 @@ internal class ClientProcessService : IDisposable
             };
 
             NativeMethods.DwmUpdateThumbnailProperties(thumb, ref props);
+        }
+
+        public void UpdateThumbnailPositions()
+        {
+            foreach (var kvp in thumbnailMap)
+            {
+                if (pictureMap.TryGetValue(kvp.Key, out var box))
+                {
+                    SetThumbnailProperties(box, kvp.Value);
+                }
+            }
         }
 
         /// <summary>
