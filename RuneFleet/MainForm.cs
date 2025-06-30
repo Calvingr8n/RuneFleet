@@ -1,5 +1,6 @@
 ﻿using RuneFleet.Interop;
 using RuneFleet.Services;
+using System.Windows.Forms;
 
 namespace RuneFleet
 {
@@ -26,6 +27,16 @@ namespace RuneFleet
             accountManager.Load("accounts.csv");
             UpdateGroupView();
             UpdateListView("All");
+
+            // TODO clean up addition of the numeric client scale control
+            // Scale button
+            ToolStripControlHost hostScale = new ToolStripControlHost(numericClientScale);
+            int scaleButtonIndex = toolStrip1.Items.IndexOf(toolStripButtonScale);
+            toolStrip1.Items.Insert(scaleButtonIndex + 1, hostScale);
+            // Group selection dropdown
+            ToolStripControlHost hostGroup = new ToolStripControlHost(groupSelection);
+            int groupButtonIndex = toolStrip1.Items.IndexOf(toolStripButtonLaunch);
+            toolStrip1.Items.Insert(groupButtonIndex, hostGroup);
 
             clientService = new ClientProcessService(
                 this,
@@ -102,7 +113,7 @@ namespace RuneFleet
             if (acc != null)
             {
 
-                if (checkBoxScale.Checked)
+                if (toolStripButtonScale.Checked)
                 {
                     clientService.LaunchClient(acc, numericClientScale.Value);
                 }
@@ -114,43 +125,6 @@ namespace RuneFleet
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
-        // Launches all accounts in the selected group.
-        private async void buttonLaunchAll_Click(object sender, EventArgs e)
-        {
-            listViewAccounts.Enabled = false;
-            groupSelection.Enabled = false;
-            buttonLaunchAll.Enabled = false;
-            checkBoxScale.Enabled = false;
-            numericClientScale.Enabled = false;
-            var rand = new Random();
-            foreach (var acc in accountManager.Accounts)
-            {
-                if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
-                {
-                    if (checkBoxScale.Checked)
-                    {
-                        clientService.LaunchClient(acc, numericClientScale.Value);
-                    }
-                    else
-                    {
-                        clientService.LaunchClient(acc, 0);
-                    }
-
-                    // otherwise it causes some clients to fail launch
-                    await Task.Delay(2000 + rand.Next(1000));
-                }
-                else
-                {
-                    Console.WriteLine(acc.Group?.ToString() + "; " + groupSelection.SelectedValue?.ToString());
-                }
-            }
-            listViewAccounts.Enabled = true;
-            groupSelection.Enabled = true;
-            buttonLaunchAll.Enabled = true;
-            checkBoxScale.Enabled = true;
-            numericClientScale.Enabled = true;
-            UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
-        }
 
         // Handles the item activation in the list view, which is triggered when an item is double-clicked or activated.
         private void listViewAccounts_ItemActivate(object sender, EventArgs e)
@@ -196,54 +170,6 @@ namespace RuneFleet
         }
 
 
-        // Starts or stops watching for new character processes based on the button state.
-        private void buttonWatchCharacters_Click(object sender, EventArgs e)
-        {
-            if (watchTokenSource == null)
-            {
-                // Disable other controls
-                groupSelection.Enabled = false;
-                buttonLaunchAll.Enabled = false;
-                refreshPane.Enabled = false;
-                listViewAccounts.Enabled = false;
-
-                // Start watching
-                watchTokenSource = new CancellationTokenSource();
-                pictureLoading.Visible = true;
-                labelLoading.Visible = true;
-                buttonWatchCharacters.Text = "Stop Import Helper";
-                // Watching for new client processes
-                watchTask = Task.Run(() => clientService.WatchForClientsAsync(watchTokenSource.Token));
-            }
-            else
-            {
-                // Enable other controls
-                groupSelection.Enabled = true;
-                buttonLaunchAll.Enabled = true;
-                refreshPane.Enabled = true;
-                listViewAccounts.Enabled = true;
-                // Stop watching
-                watchTokenSource.Cancel();
-                watchTokenSource = null;
-                pictureLoading.Visible = false;
-                labelLoading.Visible = false;
-                buttonWatchCharacters.Text = "Start Import Helper";
-                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
-            }
-        }
-
-
-        private void checkTopMost_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkTopMost.Checked)
-            {
-                MainForm.ActiveForm.TopMost = true;
-            }
-            else
-            {
-                MainForm.ActiveForm.TopMost = false;
-            }
-        }
 
         private void flowPanelProcesses_Scroll(object sender, ScrollEventArgs e)
         {
@@ -253,6 +179,116 @@ namespace RuneFleet
         private void flowPanelProcesses_Resize(object sender, EventArgs e)
         {
             clientService.UpdateThumbnailPositions();
+        }
+
+        // Toggles the topmost state of the main form based on the button state.
+        private void toolStripButtonTop_Click(object sender, EventArgs e)
+        {
+            if (toolStripButtonTop.Checked)
+            {
+                MainForm.ActiveForm.TopMost = true;
+            }
+            else
+            {
+                MainForm.ActiveForm.TopMost = false;
+            }
+        }
+
+        // Starts or stops watching for new character processes based on the button state.
+        private void toolStripButtonImport_Click(object sender, EventArgs e)
+        {
+            if (watchTokenSource == null)
+            {
+                // Disable other controls
+                groupSelection.Enabled = false;
+                toolStripButtonLaunch.Enabled = false;
+                toolStripButtonRefresh.Enabled = false;
+                listViewAccounts.Enabled = false;
+                toolStripButtonScale.Enabled = false;
+                numericClientScale.Enabled = false;
+
+                // Start watching
+                //toolStripProgressBar1.Visible = true;
+                toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
+                watchTokenSource = new CancellationTokenSource();
+                labelLoading.Visible = true;
+                //buttonWatchCharacters.Text = "Stop Import Helper";
+                // Watching for new client processes
+                watchTask = Task.Run(() => clientService.WatchForClientsAsync(watchTokenSource.Token));
+            }
+            else
+            {
+                // Enable other controls
+                groupSelection.Enabled = true;
+                toolStripButtonLaunch.Enabled = true;
+                toolStripButtonRefresh.Enabled = true;
+                listViewAccounts.Enabled = true;
+                toolStripButtonScale.Enabled = true;
+                numericClientScale.Enabled = true;
+                // Stop watching
+                //toolStripProgressBar1.Visible = false;
+                toolStripProgressBar1.Style = ProgressBarStyle.Blocks;
+                toolStripProgressBar1.Value = 0;
+                watchTokenSource.Cancel();
+                watchTokenSource = null;
+                labelLoading.Visible = false;
+                //buttonWatchCharacters.Text = "Start Import Helper";
+                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+            }
+        }
+
+        // Launches all accounts in the selected group.
+        private async void toolStripButtonLaunch_Click(object sender, EventArgs e)
+        {
+            listViewAccounts.Enabled = false;
+            groupSelection.Enabled = false;
+            toolStripButtonLaunch.Enabled = false;
+            toolStripButtonScale.Enabled = false;
+            numericClientScale.Enabled = false;
+            var rand = new Random();
+            foreach (var acc in accountManager.Accounts)
+            {
+                if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
+                {
+                    if (toolStripButtonScale.Checked)
+                    {
+                        clientService.LaunchClient(acc, numericClientScale.Value);
+                    }
+                    else
+                    {
+                        clientService.LaunchClient(acc, 0);
+                    }
+
+                    // otherwise it causes some clients to fail launch
+                    await Task.Delay(2000 + rand.Next(1000));
+                }
+                else
+                {
+                    Console.WriteLine(acc.Group?.ToString() + "; " + groupSelection.SelectedValue?.ToString());
+                }
+            }
+            listViewAccounts.Enabled = true;
+            groupSelection.Enabled = true;
+            toolStripButtonLaunch.Enabled = true;
+            toolStripButtonScale.Enabled = true;
+            numericClientScale.Enabled = true;
+            UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+        }
+
+        // Refreshes the process display and updates the list view with the selected group.
+        private void toolStripButtonRefresh_Click(object sender, EventArgs e)
+        {
+            clientService.RefreshProcessDisplay();
+            UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+        }
+
+        private void toolStripButtonHelp_Click(object sender, EventArgs e)
+        {
+            //TODO open info window for credit
+            MessageBox.Show(".steakboy on Discord\r\n" +
+                            "Icons are from Chanut and Freepik at FlatIcons\r\n" +
+                            "Features from chronic0590",
+                            "Credits", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
