@@ -101,7 +101,15 @@ namespace RuneFleet
             var acc = accountManager.GetAccountByDisplayName(selectedAccount);
             if (acc != null)
             {
-                clientService.LaunchClient(acc);
+
+                if (checkBoxScale.Checked)
+                {
+                    clientService.LaunchClient(acc, numericClientScale.Value);
+                }
+                else
+                {
+                    clientService.LaunchClient(acc, 0);
+                }
             }
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
@@ -111,14 +119,25 @@ namespace RuneFleet
         {
             listViewAccounts.Enabled = false;
             groupSelection.Enabled = false;
+            buttonLaunchAll.Enabled = false;
+            checkBoxScale.Enabled = false;
+            numericClientScale.Enabled = false;
             var rand = new Random();
             foreach (var acc in accountManager.Accounts)
             {
                 if (acc.Group != null && acc.Group.Contains(groupSelection.SelectedItem?.ToString()))
                 {
-                    clientService.LaunchClient(acc);
+                    if (checkBoxScale.Checked)
+                    {
+                        clientService.LaunchClient(acc, numericClientScale.Value);
+                    }
+                    else
+                    {
+                        clientService.LaunchClient(acc, 0);
+                    }
+
                     // otherwise it causes some clients to fail launch
-                    await Task.Delay(1000 + rand.Next(1000));
+                    await Task.Delay(2000 + rand.Next(1000));
                 }
                 else
                 {
@@ -127,6 +146,9 @@ namespace RuneFleet
             }
             listViewAccounts.Enabled = true;
             groupSelection.Enabled = true;
+            buttonLaunchAll.Enabled = true;
+            checkBoxScale.Enabled = true;
+            numericClientScale.Enabled = true;
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
