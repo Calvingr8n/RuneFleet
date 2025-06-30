@@ -29,7 +29,10 @@
             checkTopMost = new CheckBox();
             pictureLoading = new PictureBox();
             labelLoading = new Label();
+            numericClientScale = new NumericUpDown();
+            checkBoxScale = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)pictureLoading).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericClientScale).BeginInit();
             SuspendLayout();
             // 
             // listViewAccounts
@@ -60,7 +63,7 @@
             // 
             // buttonLaunchAll
             // 
-            buttonLaunchAll.Location = new Point(407, 12);
+            buttonLaunchAll.Location = new Point(443, 12);
             buttonLaunchAll.Name = "buttonLaunchAll";
             buttonLaunchAll.Size = new Size(94, 26);
             buttonLaunchAll.TabIndex = 2;
@@ -80,11 +83,11 @@
             // 
             // refreshPane
             // 
-            refreshPane.Location = new Point(507, 12);
+            refreshPane.Location = new Point(543, 12);
             refreshPane.Name = "refreshPane";
-            refreshPane.Size = new Size(91, 26);
+            refreshPane.Size = new Size(55, 26);
             refreshPane.TabIndex = 4;
-            refreshPane.Text = "Load Previews";
+            refreshPane.Text = "Refresh";
             refreshPane.UseVisualStyleBackColor = true;
             refreshPane.Click += buttonLoadPreviews_Click;
             // 
@@ -92,17 +95,17 @@
             // 
             groupSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             groupSelection.FormattingEnabled = true;
-            groupSelection.Location = new Point(288, 14);
+            groupSelection.Location = new Point(302, 14);
             groupSelection.Name = "groupSelection";
-            groupSelection.Size = new Size(113, 23);
+            groupSelection.Size = new Size(135, 23);
             groupSelection.TabIndex = 6;
             groupSelection.SelectedValueChanged += groupSelection_SelectedValueChanged;
             // 
             // buttonWatchCharacters
             // 
-            buttonWatchCharacters.Location = new Point(12, 12);
+            buttonWatchCharacters.Location = new Point(64, 12);
             buttonWatchCharacters.Name = "buttonWatchCharacters";
-            buttonWatchCharacters.Size = new Size(174, 26);
+            buttonWatchCharacters.Size = new Size(122, 26);
             buttonWatchCharacters.TabIndex = 7;
             buttonWatchCharacters.Text = "Start Import Helper";
             buttonWatchCharacters.UseVisualStyleBackColor = true;
@@ -113,11 +116,11 @@
             checkTopMost.AutoSize = true;
             checkTopMost.Checked = true;
             checkTopMost.CheckState = CheckState.Checked;
-            checkTopMost.Location = new Point(192, 17);
+            checkTopMost.Location = new Point(13, 17);
             checkTopMost.Name = "checkTopMost";
-            checkTopMost.Size = new Size(90, 19);
+            checkTopMost.Size = new Size(45, 19);
             checkTopMost.TabIndex = 8;
-            checkTopMost.Text = "Keep on top";
+            checkTopMost.Text = "Top";
             checkTopMost.UseVisualStyleBackColor = true;
             checkTopMost.CheckedChanged += checkTopMost_CheckedChanged;
             // 
@@ -144,9 +147,33 @@
             labelLoading.Text = resources.GetString("labelLoading.Text");
             labelLoading.Visible = false;
             // 
+            // numericClientScale
+            // 
+            numericClientScale.DecimalPlaces = 1;
+            numericClientScale.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            numericClientScale.Location = new Point(251, 14);
+            numericClientScale.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
+            numericClientScale.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
+            numericClientScale.Name = "numericClientScale";
+            numericClientScale.Size = new Size(45, 23);
+            numericClientScale.TabIndex = 11;
+            numericClientScale.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            // 
+            // checkBoxScale
+            // 
+            checkBoxScale.AutoSize = true;
+            checkBoxScale.Location = new Point(192, 17);
+            checkBoxScale.Name = "checkBoxScale";
+            checkBoxScale.Size = new Size(53, 19);
+            checkBoxScale.TabIndex = 12;
+            checkBoxScale.Text = "Scale";
+            checkBoxScale.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             ClientSize = new Size(608, 461);
+            Controls.Add(checkBoxScale);
+            Controls.Add(numericClientScale);
             Controls.Add(pictureLoading);
             Controls.Add(labelLoading);
             Controls.Add(checkTopMost);
@@ -164,6 +191,7 @@
             TopMost = true;
             FormClosing += MainForm_FormClosing;
             ((System.ComponentModel.ISupportInitialize)pictureLoading).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericClientScale).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -173,5 +201,7 @@
         private CheckBox checkTopMost;
         private PictureBox pictureLoading;
         private Label labelLoading;
+        private NumericUpDown numericClientScale;
+        private CheckBox checkBoxScale;
     }
 }

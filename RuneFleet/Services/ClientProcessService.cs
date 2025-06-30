@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace RuneFleet.Services
@@ -37,7 +38,7 @@ internal class ClientProcessService : IDisposable
         /// <summary>
         /// Launch a RuneScape client for the given account.
         /// </summary>
-        public async void LaunchClient(Account acc)
+        public async void LaunchClient(Account acc, decimal scale)
         {
             var filename = acc.Client;
             if (string.IsNullOrEmpty(filename))
@@ -54,9 +55,19 @@ internal class ClientProcessService : IDisposable
             psi.EnvironmentVariables["JX_SESSION_ID"] = acc.SessionId;
             psi.EnvironmentVariables["JX_CHARACTER_ID"] = acc.CharacterId;
             psi.EnvironmentVariables["JX_DISPLAY_NAME"] = acc.DisplayName;
-            psi.Arguments = acc.Arguments ?? string.Empty;
+            if (scale == 0)
+            {
+                psi.Arguments = acc.Arguments ?? string.Empty;
+            }
+            else 
+            {
+                psi.Arguments = acc.Arguments ?? string.Empty;
+                string scaleArg = Regex.Replace(psi.Arguments, @"--scale=\d+(\.\d+)?", string.Empty);
+                psi.Arguments = scaleArg + " --scale=" +scale.ToString();
+            }
 
-            var proc = Process.Start(psi);
+
+                var proc = Process.Start(psi);
 
             if (filename.Contains("osclient", StringComparison.OrdinalIgnoreCase))
             {
