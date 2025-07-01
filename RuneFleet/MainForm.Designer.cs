@@ -36,6 +36,7 @@
             toolStripButtonRefresh = new ToolStripButton();
             toolStripSeparator3 = new ToolStripSeparator();
             toolStripButtonScale = new ToolStripButton();
+            toolStripButtonBrowserOpen = new ToolStripButton();
             toolStripButtonBrowserImport = new ToolStripButton();
             toolStripSeparator4 = new ToolStripSeparator();
             toolStripButtonHelp = new ToolStripButton();
@@ -119,7 +120,7 @@
             // toolStrip1
             // 
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripButtonBrowserImport, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripButtonBrowserOpen, toolStripButtonBrowserImport, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(608, 25);
@@ -219,6 +220,17 @@
             toolStripButtonScale.Text = "Scale";
             toolStripButtonScale.ToolTipText = "Overrides scale settings for RuneLite.";
             //
+            // toolStripButtonBrowserOpen
+            //
+            toolStripButtonBrowserOpen.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonBrowserOpen.ImageTransparentColor = Color.Magenta;
+            toolStripButtonBrowserOpen.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonBrowserOpen.Name = "toolStripButtonBrowserOpen";
+            toolStripButtonBrowserOpen.Size = new Size(92, 23);
+            toolStripButtonBrowserOpen.Text = "Open Browser";
+            toolStripButtonBrowserOpen.ToolTipText = "Launch Chrome for web import";
+            toolStripButtonBrowserOpen.Click += toolStripButtonOpenBrowser_Click;
+            //
             // toolStripButtonBrowserImport
             //
             toolStripButtonBrowserImport.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -285,6 +297,7 @@
         private ToolStripProgressBar toolStripProgressBar1;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton toolStripButtonScale;
+        private ToolStripButton toolStripButtonBrowserOpen;
         private ToolStripButton toolStripButtonBrowserImport;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton toolStripButtonTop;

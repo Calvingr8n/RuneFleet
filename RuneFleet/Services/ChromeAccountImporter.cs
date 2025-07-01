@@ -9,8 +9,10 @@ namespace RuneFleet.Services
 {
     internal class ChromeAccountImporter
     {
+        private const string ChromePath = @"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
         private const string ChromeArgs = "--new-window https://account.jagex.com/en-GB/manage --incognito --remote-debugging-port=9222";
         private readonly HttpClient httpClient = new();
+        private Process? chromeProcess;
 
         private class AccountDto
         {
@@ -18,36 +20,31 @@ namespace RuneFleet.Services
             public string? JX_DISPLAY_NAME { get; set; }
         }
 
+        public void LaunchBrowser()
+        {
+            if (chromeProcess == null || chromeProcess.HasExited)
+            {
+                chromeProcess = Process.Start(ChromePath, ChromeArgs);
+            }
+        }
+
         public async Task<List<Account>> ImportAsync()
         {
-            _ = Process.Start("chrome.exe", ChromeArgs);
-
+            var json = await httpClient.GetStringAsync("http://localhost:9222/json");
+            using var doc = JsonDocument.Parse(json);
             string? wsUrl = null;
-            for (int i = 0; i < 60 && wsUrl == null; i++)
+            foreach (var page in doc.RootElement.EnumerateArray())
             {
-                await Task.Delay(1000);
-                try
+                var url = page.GetProperty("url").GetString();
+                if (url != null && url.StartsWith("https://account.runescape.com/en-GB/game"))
                 {
-                    var json = await httpClient.GetStringAsync("http://localhost:9222/json");
-                    using var doc = JsonDocument.Parse(json);
-                    foreach (var page in doc.RootElement.EnumerateArray())
-                    {
-                        var url = page.GetProperty("url").GetString();
-                        if (url != null && url.StartsWith("https://account.runescape.com/en-GB/game"))
-                        {
-                            wsUrl = page.GetProperty("webSocketDebuggerUrl").GetString();
-                            break;
-                        }
-                    }
-                }
-                catch
-                {
-                    // ignore until Chrome is ready
+                    wsUrl = page.GetProperty("webSocketDebuggerUrl").GetString();
+                    break;
                 }
             }
 
             if (wsUrl == null)
-                throw new InvalidOperationException("Timed out waiting for page to load.");
+                throw new InvalidOperationException("RuneScape account page not found.");
 
             using var ws = new WebSocket(wsUrl);
             var tcs = new TaskCompletionSource<string>();
@@ -75,6 +72,13 @@ namespace RuneFleet.Services
             using var respDoc = JsonDocument.Parse(response);
             var value = respDoc.RootElement.GetProperty("result").GetProperty("result").GetProperty("value").GetString();
             var accounts = value != null ? JsonSerializer.Deserialize<List<AccountDto>>(value) : new();
+
+            if (chromeProcess != null && !chromeProcess.HasExited)
+            {
+                try { chromeProcess.Kill(); } catch { }
+                chromeProcess = null;
+            }
+
             return accounts?.Select(a => new Account { CharacterId = a.JX_CHARACTER_ID.ToString(), DisplayName = a.JX_DISPLAY_NAME }).ToList() ?? new();
         }
     }

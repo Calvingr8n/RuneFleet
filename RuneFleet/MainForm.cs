@@ -286,6 +286,18 @@ namespace RuneFleet
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
         }
 
+        private void toolStripButtonOpenBrowser_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                chromeImporter.LaunchBrowser();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to launch browser: {ex.Message}");
+            }
+        }
+
         private async void toolStripButtonBrowserImport_Click(object sender, EventArgs e)
         {
             try
