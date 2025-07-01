@@ -1,12 +1,16 @@
 ﻿using RuneFleet.Interop;
 using RuneFleet.Services;
 using System.Windows.Forms;
+using System.Linq;
+using System;
+using System.IO;
 
 namespace RuneFleet
 {
     public partial class MainForm : Form
     {
         private readonly AccountManager accountManager = new();
+        private readonly ChromeAccountImporter chromeImporter = new();
         // Service handling client processes and thumbnails
         private ClientProcessService clientService;
         // Keybinds
@@ -280,6 +284,32 @@ namespace RuneFleet
         {
             clientService.RefreshProcessDisplay();
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+        }
+
+        private async void toolStripButtonBrowserImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var accounts = await chromeImporter.ImportAsync();
+                foreach (var acc in accounts)
+                {
+                    if (!accountManager.Accounts.Any(a => a.CharacterId == acc.CharacterId && a.DisplayName == acc.DisplayName))
+                    {
+                        var existing = accountManager.Accounts.FirstOrDefault(a => a.CharacterId == acc.CharacterId);
+                        if (existing != null)
+                        {
+                            acc.SessionId = existing.SessionId;
+                        }
+                        accountManager.Accounts.Add(acc);
+                        File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},Imported;,{acc.Client},{acc.Arguments}\r\n");
+                    }
+                }
+                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to import accounts: {ex.Message}");
+            }
         }
 
         private void toolStripButtonHelp_Click(object sender, EventArgs e)
