@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace RuneFleet.Services
@@ -259,7 +261,33 @@ internal class ClientProcessService : IDisposable
                         string? characterId = env.ContainsKey("JX_CHARACTER_ID") ? env["JX_CHARACTER_ID"] : null;
                         string clientPath = proc.MainModule?.FileName ?? string.Empty;
 
-                        if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
+                        if (!string.IsNullOrWhiteSpace(sessionId))
+                        {
+                            var fetched = await FetchAccountsFromSessionAsync(sessionId);
+                            foreach (var f in fetched)
+                            {
+                                if (string.IsNullOrWhiteSpace(f.DisplayName))
+                                    continue;
+                                if (accounts.Any(a => a.DisplayName == f.DisplayName))
+                                    continue;
+
+                                var acc = new Account
+                                {
+                                    SessionId = sessionId,
+                                    DisplayName = f.DisplayName,
+                                    CharacterId = f.AccountId,
+                                    AccessToken = string.Empty,
+                                    RefreshToken = string.Empty,
+                                    Client = clientPath,
+                                    Group = [],
+                                    Arguments = string.Empty
+                                };
+
+                                accounts.Add(acc);
+                                File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},Captured;,{acc.Client},{acc.Arguments}\r\n");
+                            }
+                        }
+                        else if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
                         {
                             var acc = new Account
                             {
@@ -282,8 +310,38 @@ internal class ClientProcessService : IDisposable
                         Trace.TraceError($"Failed to capture process {proc.Id}: {ex}");
                     }
                 }
+
                 await Task.Delay(2000, token);
             }
+        }
+
+        private static async Task<List<ApiAccount>> FetchAccountsFromSessionAsync(string sessionId)
+        {
+            var list = new List<ApiAccount>();
+            try
+            {
+                using var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Cookie", $"JX_SESSION_ID={sessionId}");
+                using var resp = await client.GetAsync("https://auth.runescape.com/game-session/v1/accounts?fetchMembership=true");
+                resp.EnsureSuccessStatusCode();
+                var json = await resp.Content.ReadAsStringAsync();
+                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var result = JsonSerializer.Deserialize<List<ApiAccount>>(json, opts);
+                if (result != null)
+                    list = result;
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError($"Failed to fetch accounts for session {sessionId}: {ex}");
+            }
+
+            return list;
+        }
+
+        private class ApiAccount
+        {
+            public string AccountId { get; set; } = string.Empty;
+            public string DisplayName { get; set; } = string.Empty;
         }
 
         private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, long timeoutMs = 60000, int pollIntervalMs = 200)
