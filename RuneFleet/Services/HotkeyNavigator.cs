@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace RuneFleet.Services
 {
@@ -15,6 +16,20 @@ namespace RuneFleet.Services
             if (listViewAccounts.Items.Count == 0)
                 return;
 
+            // Only consider items that have a PID assigned (sub item index 1)
+            var validIndices = new List<int>();
+            for (int i = 0; i < listViewAccounts.Items.Count; i++)
+            {
+                var item = listViewAccounts.Items[i];
+                if (item.SubItems.Count > 1 && !string.IsNullOrWhiteSpace(item.SubItems[1].Text))
+                {
+                    validIndices.Add(i);
+                }
+            }
+
+            if (validIndices.Count == 0)
+                return;
+
             int currentIndex;
             if (listViewAccounts.SelectedIndices.Count > 0)
             {
@@ -27,21 +42,23 @@ namespace RuneFleet.Services
                 currentIndex = -1;
             }
 
-            int newIndex = 0;
+            int currentPos = validIndices.IndexOf(currentIndex);
+            int newPos = 0;
 
             if (id == pgDownId)
             {
-                newIndex = (currentIndex + 1) % listViewAccounts.Items.Count;
+                newPos = (currentPos + 1) % validIndices.Count;
             }
             else if (id == pgUpId)
             {
-                newIndex = (currentIndex - 1 + listViewAccounts.Items.Count) % listViewAccounts.Items.Count;
+                newPos = (currentPos - 1 + validIndices.Count) % validIndices.Count;
             }
             else if (id == delId)
             {
-                newIndex = 0;
+                newPos = 0;
             }
 
+            int newIndex = validIndices[newPos];
             listViewAccounts.Items[newIndex].Selected = true;
             listViewAccounts.Select();
             listViewAccounts.Focus();
