@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace RuneFleet.Services
 {
@@ -47,37 +48,41 @@ internal class ClientProcessService : IDisposable
             {
                 filename = @"C:\\Program Files (x86)\\Jagex Launcher\\Games\\Old School RuneScape\\Client\\osclient.exe";
             }
+
+            string args = acc.Arguments ?? string.Empty;
+            if (scale != 0)
+            {
+                string scaleArg = Regex.Replace(args, @"--scale=\d+(\.\d+)?", string.Empty);
+                args = scaleArg + " --scale=" + scale.ToString();
+            }
+
             var psi = new ProcessStartInfo
             {
-                FileName = filename,
+                // Workaround to not open as child of RuneFleet
+                FileName = "cmd.exe",
+                Arguments = $"/C start \"\" \"{filename}\" {args}",
+                CreateNoWindow = true,
                 UseShellExecute = false
+                //FileName = filename,
             };
             psi.EnvironmentVariables["JX_ACCESS_TOKEN"] = acc.AccessToken;
             psi.EnvironmentVariables["JX_REFRESH_TOKEN"] = acc.RefreshToken;
             psi.EnvironmentVariables["JX_SESSION_ID"] = acc.SessionId;
             psi.EnvironmentVariables["JX_CHARACTER_ID"] = acc.CharacterId;
             psi.EnvironmentVariables["JX_DISPLAY_NAME"] = acc.DisplayName;
-            if (scale == 0)
-            {
-                psi.Arguments = acc.Arguments ?? string.Empty;
-            }
-            else 
-            {
-                psi.Arguments = acc.Arguments ?? string.Empty;
-                string scaleArg = Regex.Replace(psi.Arguments, @"--scale=\d+(\.\d+)?", string.Empty);
-                psi.Arguments = scaleArg + " --scale=" +scale.ToString();
-            }
+            
+            
+            var proc = Process.Start(psi);
 
-
-                var proc = Process.Start(psi);
-
+            
             if (filename.Contains("osclient", StringComparison.OrdinalIgnoreCase))
             {
-                acc.Pid = proc?.Id;
+                var childPid = await WaitForChildRuneLiteAsync(proc.Id, 1);
+                acc.Pid = childPid;
             }
             else
             {
-                var childPid = await WaitForChildRuneLiteAsync(proc.Id);
+                var childPid = await WaitForChildRuneLiteAsync(proc.Id, 2);
                 acc.Pid = childPid;
             }
         }
@@ -344,14 +349,25 @@ internal class ClientProcessService : IDisposable
             public string DisplayName { get; set; } = string.Empty;
         }
 
-        private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, long timeoutMs = 60000, int pollIntervalMs = 200)
+        private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, int depth, long timeoutMs = 60000, int pollIntervalMs = 200)
         {
             int waited = 0;
+            int foundDepth = 0;
             while (waited < timeoutMs)
             {
                 var childPid = GetChildRuneLitePid(parentPid);
                 if (childPid.HasValue)
-                    return childPid;
+                {
+                    foundDepth++;
+                    if (foundDepth == depth)
+                    {
+                        return childPid;
+                    }
+                    else
+                    {
+                        parentPid = childPid.Value; // Continue searching deeper
+                    }
+                }
 
                 await Task.Delay(pollIntervalMs);
                 waited += pollIntervalMs;
@@ -361,7 +377,7 @@ internal class ClientProcessService : IDisposable
 
         private static int? GetChildRuneLitePid(int parentPid)
         {
-            string query = $"SELECT ProcessId FROM Win32_Process WHERE ParentProcessId = {parentPid} AND Name = 'RuneLite.exe'";
+            string query = $"SELECT ProcessId FROM Win32_Process WHERE ParentProcessId = {parentPid} AND (Name = 'RuneLite.exe' OR Name = 'osclient.exe')";
             using var searcher = new ManagementObjectSearcher(query);
             using var results = searcher.Get();
 
