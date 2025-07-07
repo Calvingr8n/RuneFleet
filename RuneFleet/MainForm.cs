@@ -63,6 +63,8 @@ namespace RuneFleet
             clientService.Dispose();
         }
 
+
+
         // Modifies visible account list based on group
         private void UpdateListView(string group)
         {
@@ -286,9 +288,25 @@ namespace RuneFleet
         {
             //TODO open info window for credit
             MessageBox.Show(".steakboy on Discord\r\n" +
-                            "Icons are from Chanut and Freepik at FlatIcons\r\n" +
+                            "Icons are from Those Icons, Chanut and Freepik at FlatIcons\r\n" +
                             "Features from chronic0590",
                             "Credits", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void toolStripButtonHot_Click(object sender, EventArgs e)
+        {
+            if (toolStripButtonHot.Checked)
+            {
+                NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGDN, 0, (uint)Keys.PageDown);
+                NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGUP, 0, (uint)Keys.PageUp);
+                NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_DEL, 0, (uint)Keys.Delete);
+            }
+            else
+            {
+                NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGDN);
+                NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGUP);
+                NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_DEL);
+            }
         }
     }
 

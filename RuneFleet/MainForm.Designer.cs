@@ -27,6 +27,8 @@
             toolStrip1 = new ToolStrip();
             toolStripSeparator6 = new ToolStripSeparator();
             toolStripButtonTop = new ToolStripButton();
+            toolStripSeparator8 = new ToolStripSeparator();
+            toolStripButtonHot = new ToolStripButton();
             toolStripSeparator5 = new ToolStripSeparator();
             toolStripButtonImport = new ToolStripButton();
             toolStripProgressBar1 = new ToolStripProgressBar();
@@ -77,7 +79,7 @@
             flowPanelProcesses.BorderStyle = BorderStyle.FixedSingle;
             flowPanelProcesses.Location = new Point(192, 28);
             flowPanelProcesses.Name = "flowPanelProcesses";
-            flowPanelProcesses.Size = new Size(406, 425);
+            flowPanelProcesses.Size = new Size(432, 425);
             flowPanelProcesses.TabIndex = 3;
             // 
             // groupSelection
@@ -118,10 +120,10 @@
             // toolStrip1
             // 
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator8, toolStripButtonHot, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(608, 25);
+            toolStrip1.Size = new Size(634, 25);
             toolStrip1.TabIndex = 13;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -144,6 +146,26 @@
             toolStripButtonTop.Text = "Keep Window On Top";
             toolStripButtonTop.ToolTipText = "Keep this window on top.";
             toolStripButtonTop.Click += toolStripButtonTop_Click;
+            // 
+            // toolStripSeparator8
+            // 
+            toolStripSeparator8.Name = "toolStripSeparator8";
+            toolStripSeparator8.Size = new Size(6, 25);
+            // 
+            // toolStripButtonHot
+            // 
+            toolStripButtonHot.Checked = true;
+            toolStripButtonHot.CheckOnClick = true;
+            toolStripButtonHot.CheckState = CheckState.Checked;
+            toolStripButtonHot.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButtonHot.Image = (Image)resources.GetObject("toolStripButtonHot.Image");
+            toolStripButtonHot.ImageTransparentColor = Color.Magenta;
+            toolStripButtonHot.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonHot.Name = "toolStripButtonHot";
+            toolStripButtonHot.Size = new Size(23, 23);
+            toolStripButtonHot.Text = "Hotkey";
+            toolStripButtonHot.ToolTipText = "Enable or disable Hotkeys.";
+            toolStripButtonHot.Click += toolStripButtonHot_Click;
             // 
             // toolStripSeparator5
             // 
@@ -242,7 +264,7 @@
             // 
             // MainForm
             // 
-            ClientSize = new Size(608, 461);
+            ClientSize = new Size(634, 461);
             Controls.Add(numericClientScale);
             Controls.Add(groupSelection);
             Controls.Add(toolStrip1);
@@ -251,7 +273,7 @@
             Controls.Add(flowPanelProcesses);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MinimumSize = new Size(624, 500);
+            MinimumSize = new Size(650, 500);
             Name = "MainForm";
             Text = "RuneFleet";
             TopMost = true;
@@ -280,5 +302,7 @@
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripSeparator toolStripSeparator6;
         private ToolStripSeparator toolStripSeparator7;
+        private ToolStripButton toolStripButtonHot;
+        private ToolStripSeparator toolStripSeparator8;
     }
 }

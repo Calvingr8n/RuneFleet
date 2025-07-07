@@ -321,7 +321,7 @@ internal class ClientProcessService : IDisposable
             try
             {
                 using var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Cookie", $"JX_SESSION_ID={sessionId}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {sessionId}");
                 using var resp = await client.GetAsync("https://auth.runescape.com/game-session/v1/accounts?fetchMembership=true");
                 resp.EnsureSuccessStatusCode();
                 var json = await resp.Content.ReadAsStringAsync();
