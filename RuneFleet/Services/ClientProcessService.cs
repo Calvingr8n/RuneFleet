@@ -47,39 +47,29 @@ internal class ClientProcessService : IDisposable
             {
                 filename = @"C:\\Program Files (x86)\\Jagex Launcher\\Games\\Old School RuneScape\\Client\\osclient.exe";
             }
+            string args = acc.Arguments ?? string.Empty;
+            if (scale != 0)
+            {
+                string scaleArg = Regex.Replace(args, @"--scale=\d+(\.\d+)?", string.Empty);
+                args = scaleArg + " --scale=" + scale.ToString();
+            }
+
             var psi = new ProcessStartInfo
             {
-                FileName = filename,
-                UseShellExecute = false
+                FileName = "cmd.exe",
+                Arguments = $"/C start \"\" \"{filename}\" {args}",
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
             psi.EnvironmentVariables["JX_ACCESS_TOKEN"] = acc.AccessToken;
             psi.EnvironmentVariables["JX_REFRESH_TOKEN"] = acc.RefreshToken;
             psi.EnvironmentVariables["JX_SESSION_ID"] = acc.SessionId;
             psi.EnvironmentVariables["JX_CHARACTER_ID"] = acc.CharacterId;
             psi.EnvironmentVariables["JX_DISPLAY_NAME"] = acc.DisplayName;
-            if (scale == 0)
-            {
-                psi.Arguments = acc.Arguments ?? string.Empty;
-            }
-            else 
-            {
-                psi.Arguments = acc.Arguments ?? string.Empty;
-                string scaleArg = Regex.Replace(psi.Arguments, @"--scale=\d+(\.\d+)?", string.Empty);
-                psi.Arguments = scaleArg + " --scale=" +scale.ToString();
-            }
+            var proc = Process.Start(psi);
 
-
-                var proc = Process.Start(psi);
-
-            if (filename.Contains("osclient", StringComparison.OrdinalIgnoreCase))
-            {
-                acc.Pid = proc?.Id;
-            }
-            else
-            {
-                var childPid = await WaitForChildRuneLiteAsync(proc.Id);
-                acc.Pid = childPid;
-            }
+            var clientPid = await WaitForClientPidAsync(acc);
+            acc.Pid = clientPid;
         }
 
         /// <summary>
@@ -344,14 +334,25 @@ internal class ClientProcessService : IDisposable
             public string DisplayName { get; set; } = string.Empty;
         }
 
-        private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, long timeoutMs = 60000, int pollIntervalMs = 200)
+        private static async Task<int?> WaitForClientPidAsync(Account acc, long timeoutMs = 60000, int pollIntervalMs = 200)
         {
             int waited = 0;
             while (waited < timeoutMs)
             {
-                var childPid = GetChildRuneLitePid(parentPid);
-                if (childPid.HasValue)
-                    return childPid;
+                var procs = Process.GetProcesses().Where(IsOsrsClient);
+                foreach (var p in procs)
+                {
+                    try
+                    {
+                        var env = ReadEnvironmentVariablesFromProcess(p.Id);
+                        if (env.TryGetValue("JX_DISPLAY_NAME", out var name) && name == acc.DisplayName)
+                            return p.Id;
+                    }
+                    catch
+                    {
+                        // Ignore processes we can't inspect
+                    }
+                }
 
                 await Task.Delay(pollIntervalMs);
                 waited += pollIntervalMs;
@@ -359,28 +360,6 @@ internal class ClientProcessService : IDisposable
             return null;
         }
 
-        private static int? GetChildRuneLitePid(int parentPid)
-        {
-            string query = $"SELECT ProcessId FROM Win32_Process WHERE ParentProcessId = {parentPid} AND Name = 'RuneLite.exe'";
-            using var searcher = new ManagementObjectSearcher(query);
-            using var results = searcher.Get();
-
-            foreach (ManagementObject proc in results)
-            {
-                int childPid = Convert.ToInt32(proc["ProcessId"]);
-                try
-                {
-                    var childProc = Process.GetProcessById(childPid);
-                    if (!childProc.HasExited)
-                        return childPid;
-                }
-                catch (Exception ex)
-                {
-                    Trace.TraceWarning($"Failed to inspect child process {childPid}: {ex.Message}");
-                }
-            }
-            return null;
-        }
 
         public static void ReplaceWorldIds(string defaltWorld, string lastWorld)
         {
