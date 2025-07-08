@@ -41,6 +41,7 @@
             toolStripSeparator4 = new ToolStripSeparator();
             toolStripButtonHelp = new ToolStripButton();
             toolStripSeparator7 = new ToolStripSeparator();
+            columnHeaderId = new ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)numericClientScale).BeginInit();
             toolStrip1.SuspendLayout();
             SuspendLayout();
@@ -48,7 +49,7 @@
             // listViewAccounts
             // 
             listViewAccounts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID });
+            listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID, columnHeaderId });
             listViewAccounts.FullRowSelect = true;
             listViewAccounts.Location = new Point(11, 28);
             listViewAccounts.MultiSelect = false;
@@ -262,6 +263,10 @@
             toolStripSeparator7.Name = "toolStripSeparator7";
             toolStripSeparator7.Size = new Size(6, 25);
             // 
+            // columnHeaderId
+            // 
+            columnHeaderId.Text = "Character";
+            // 
             // MainForm
             // 
             ClientSize = new Size(634, 461);
@@ -304,5 +309,6 @@
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripButton toolStripButtonHot;
         private ToolStripSeparator toolStripSeparator8;
+        private ColumnHeader columnHeaderId;
     }
 }

@@ -62,9 +62,10 @@ namespace RuneFleet.Services
                 : Accounts.Where(a => a.Group != null && a.Group.Contains(group));
         }
 
-        public Account? GetAccountByDisplayName(string displayName)
+        public Account? GetAccountByCharacterId(string characterId)
         {
-            return Accounts.FirstOrDefault(a => a.DisplayName == displayName);
+            //return Accounts.FirstOrDefault(a => a.DisplayName == displayName);
+            return Accounts.FirstOrDefault(a => a.CharacterId == characterId);
         }
         }
 
