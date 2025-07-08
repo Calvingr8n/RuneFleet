@@ -108,7 +108,7 @@ namespace RuneFleet
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
-            var selectedAccount = listViewAccounts.SelectedItems[2].Text.ToString();
+            var selectedAccount = listViewAccounts.SelectedItems[0].SubItems[2].Text.ToString();
             // TODO fix BUG: If the id of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
@@ -132,7 +132,7 @@ namespace RuneFleet
         // Handles the item activation in the list view, which is triggered when an item is double-clicked or activated.
         private void listViewAccounts_ItemActivate(object sender, EventArgs e)
         {
-            var selectedAccount = listViewAccounts.SelectedItems[2].Text.ToString();
+            var selectedAccount = listViewAccounts.SelectedItems[0].SubItems[2].Text.ToString();
             // TODO fix BUG: If the id of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.

@@ -2,6 +2,7 @@ using RuneFleet.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
+using System.Collections.Immutable;
 
 namespace RuneFleet.Services
 {

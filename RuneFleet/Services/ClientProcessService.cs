@@ -271,16 +271,16 @@ internal class ClientProcessService : IDisposable
                             var fetched = await FetchAccountsFromSessionAsync(sessionId);
                             foreach (var f in fetched)
                             {
-                                if (string.IsNullOrWhiteSpace(f.CharacterId))
+                                if (string.IsNullOrWhiteSpace(f.AccountId))
                                     continue;
-                                if (accounts.Any(a => a.CharacterId == f.CharacterId))
+                                if (accounts.Any(a => a.CharacterId == f.AccountId))
                                     continue;
 
                                 var acc = new Account
                                 {
                                     SessionId = sessionId,
                                     DisplayName = f.DisplayName,
-                                    CharacterId = f.CharacterId,
+                                    CharacterId = f.AccountId,
                                     AccessToken = string.Empty,
                                     RefreshToken = string.Empty,
                                     Client = clientPath,
@@ -345,8 +345,8 @@ internal class ClientProcessService : IDisposable
 
         private class ApiAccount
         {
-            public string CharacterId { get; set; } = string.Empty;
-            public string DisplayName { get; set; } = string.Empty;
+            public string AccountId { get; set; } = string.Empty;
+            public string DisplayName { get; set; } = "No Name";
         }
 
         private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, int depth, long timeoutMs = 60000, int pollIntervalMs = 200)

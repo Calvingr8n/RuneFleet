@@ -265,7 +265,8 @@
             // 
             // columnHeaderId
             // 
-            columnHeaderId.Text = "Character";
+            columnHeaderId.Text = "Id";
+            columnHeaderId.Width = 0; // Hidden column for internal use
             // 
             // MainForm
             // 
