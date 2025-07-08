@@ -74,6 +74,7 @@ namespace RuneFleet
             {
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
+                item.SubItems.Add(acc.CharacterId?.ToString() ?? "");
                 if (group == "All" || (acc.Group != null && acc.Group.Contains(group)))
                 {
                     listViewAccounts.Items.Add(item);
@@ -107,11 +108,11 @@ namespace RuneFleet
         private void buttonLaunchSelected_Click(object sender, EventArgs e)
         {
             if (listViewAccounts.SelectedIndices.Count == 0) return;
-            var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
-            // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
+            var selectedAccount = listViewAccounts.SelectedItems[0].SubItems[2].Text.ToString();
+            // TODO fix BUG: If the id of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var acc = accountManager.GetAccountByDisplayName(selectedAccount);
+            var acc = accountManager.GetAccountByCharacterId(selectedAccount);
             if (acc != null)
             {
 
@@ -131,11 +132,11 @@ namespace RuneFleet
         // Handles the item activation in the list view, which is triggered when an item is double-clicked or activated.
         private void listViewAccounts_ItemActivate(object sender, EventArgs e)
         {
-            var selectedAccount = listViewAccounts.SelectedItems[0].Text.ToString();
-            // TODO fix BUG: If the name of the character is not unique, this will not work correctly.
+            var selectedAccount = listViewAccounts.SelectedItems[0].SubItems[2].Text.ToString();
+            // TODO fix BUG: If the id of the character is not unique, this will not work correctly.
             // This is a known issue with the current implementation.
             // This is complex and ugly, but it works for now.
-            var pid = int.Parse(accountManager.GetAccountByDisplayName(selectedAccount)?.Pid?.ToString() ?? "0");
+            var pid = int.Parse(accountManager.GetAccountByCharacterId(selectedAccount)?.Pid?.ToString() ?? "0");
             clientService.FocusClient(pid);
         }
 

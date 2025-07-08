@@ -271,9 +271,9 @@ internal class ClientProcessService : IDisposable
                             var fetched = await FetchAccountsFromSessionAsync(sessionId);
                             foreach (var f in fetched)
                             {
-                                if (string.IsNullOrWhiteSpace(f.DisplayName))
+                                if (string.IsNullOrWhiteSpace(f.AccountId))
                                     continue;
-                                if (accounts.Any(a => a.DisplayName == f.DisplayName))
+                                if (accounts.Any(a => a.CharacterId == f.AccountId))
                                     continue;
 
                                 var acc = new Account
@@ -292,7 +292,7 @@ internal class ClientProcessService : IDisposable
                                 File.AppendAllText("accounts.csv", $"{acc.AccessToken},{acc.RefreshToken},{acc.SessionId},{acc.DisplayName},{acc.CharacterId},Captured;,{acc.Client},{acc.Arguments}\r\n");
                             }
                         }
-                        else if (!string.IsNullOrWhiteSpace(displayName) && !accounts.Any(a => a.DisplayName == displayName))
+                        else if (!string.IsNullOrWhiteSpace(characterId) && !accounts.Any(a => a.CharacterId == characterId))
                         {
                             var acc = new Account
                             {
@@ -346,7 +346,7 @@ internal class ClientProcessService : IDisposable
         private class ApiAccount
         {
             public string AccountId { get; set; } = string.Empty;
-            public string DisplayName { get; set; } = string.Empty;
+            public string DisplayName { get; set; } = "No Name";
         }
 
         private static async Task<int?> WaitForChildRuneLiteAsync(int parentPid, int depth, long timeoutMs = 60000, int pollIntervalMs = 200)
