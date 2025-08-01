@@ -26,6 +26,7 @@ internal class ClientProcessService : IDisposable
         private readonly Action refreshListView;
         private readonly Dictionary<IntPtr, IntPtr> thumbnailMap = new();
         private readonly Dictionary<IntPtr, PictureBox> pictureMap = new();
+        public bool BorderlessEnabled { get; set; }
 
         public ClientProcessService(Form form,
                                     FlowLayoutPanel panel,
@@ -84,6 +85,19 @@ internal class ClientProcessService : IDisposable
             {
                 var childPid = await WaitForChildRuneLiteAsync(proc.Id, 2);
                 acc.Pid = childPid;
+            }
+
+            if (BorderlessEnabled && acc.Pid.HasValue)
+            {
+                try
+                {
+                    var cproc = Process.GetProcessById(acc.Pid.Value);
+                    ApplyBorderless(cproc.MainWindowHandle, true);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Failed to set borderless for {acc.Pid}: {ex.Message}");
+                }
             }
         }
 
@@ -158,6 +172,11 @@ internal class ClientProcessService : IDisposable
             var hwnd = proc.MainWindowHandle;
             if (hwnd == IntPtr.Zero)
                 return;
+
+            if (BorderlessEnabled)
+            {
+                ApplyBorderless(hwnd, true);
+            }
 
             var pictureBox = CreateProcessPictureBox(acc, proc);
             panel.Controls.Add(pictureBox);
@@ -530,6 +549,41 @@ internal class ClientProcessService : IDisposable
                 throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to read pointer.");
 
             return new IntPtr(BitConverter.ToInt32(buffer, 0));
+        }
+
+        private static void ApplyBorderless(IntPtr hwnd, bool borderless)
+        {
+            if (hwnd == IntPtr.Zero)
+                return;
+
+            long style = NativeMethods.GetWindowLong(hwnd, NativeMethods.GWL_STYLE);
+            if (borderless)
+                style &= ~(long)(NativeMethods.WS_CAPTION | NativeMethods.WS_THICKFRAME);
+            else
+                style |= (long)(NativeMethods.WS_CAPTION | NativeMethods.WS_THICKFRAME);
+
+            NativeMethods.SetWindowLong(hwnd, NativeMethods.GWL_STYLE, style);
+            NativeMethods.SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+                NativeMethods.SWP_NOMOVE | NativeMethods.SWP_NOSIZE | NativeMethods.SWP_NOZORDER | NativeMethods.SWP_FRAMECHANGED);
+        }
+
+        public void ApplyBorderlessToAll()
+        {
+            foreach (var acc in accounts)
+            {
+                if (!acc.Pid.HasValue)
+                    continue;
+
+                try
+                {
+                    var proc = Process.GetProcessById(acc.Pid.Value);
+                    ApplyBorderless(proc.MainWindowHandle, BorderlessEnabled);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Failed to update borderless for {acc.Pid}: {ex.Message}");
+                }
+            }
         }
 
         public void Dispose()

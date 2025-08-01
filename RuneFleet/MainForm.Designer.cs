@@ -40,6 +40,8 @@
             toolStripButtonScale = new ToolStripButton();
             toolStripSeparator4 = new ToolStripSeparator();
             toolStripButtonHelp = new ToolStripButton();
+            toolStripSeparator9 = new ToolStripSeparator();
+            toolStripButtonBorderless = new ToolStripButton();
             toolStripSeparator7 = new ToolStripSeparator();
             columnHeaderId = new ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)numericClientScale).BeginInit();
@@ -121,7 +123,7 @@
             // toolStrip1
             // 
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator8, toolStripButtonHot, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator7 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator6, toolStripButtonTop, toolStripSeparator8, toolStripButtonHot, toolStripSeparator5, toolStripButtonImport, toolStripProgressBar1, toolStripSeparator1, toolStripButtonLaunch, toolStripSeparator2, toolStripButtonRefresh, toolStripSeparator3, toolStripButtonScale, toolStripSeparator4, toolStripButtonHelp, toolStripSeparator9, toolStripButtonBorderless, toolStripSeparator7 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(634, 25);
@@ -257,9 +259,26 @@
             toolStripButtonHelp.Text = "Help";
             toolStripButtonHelp.ToolTipText = "Displays credits and assistance info.";
             toolStripButtonHelp.Click += toolStripButtonHelp_Click;
-            // 
+            //
+            // toolStripSeparator9
+            //
+            toolStripSeparator9.Name = "toolStripSeparator9";
+            toolStripSeparator9.Size = new Size(6, 25);
+            //
+            // toolStripButtonBorderless
+            //
+            toolStripButtonBorderless.CheckOnClick = true;
+            toolStripButtonBorderless.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonBorderless.ImageTransparentColor = Color.Magenta;
+            toolStripButtonBorderless.Margin = new Padding(0, 1, 0, 1);
+            toolStripButtonBorderless.Name = "toolStripButtonBorderless";
+            toolStripButtonBorderless.Size = new Size(72, 23);
+            toolStripButtonBorderless.Text = "Borderless";
+            toolStripButtonBorderless.ToolTipText = "Toggle borderless mode for clients.";
+            toolStripButtonBorderless.Click += toolStripButtonBorderless_Click;
+            //
             // toolStripSeparator7
-            // 
+            //
             toolStripSeparator7.Name = "toolStripSeparator7";
             toolStripSeparator7.Size = new Size(6, 25);
             // 
@@ -304,6 +323,8 @@
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripButton toolStripButtonTop;
         private ToolStripButton toolStripButtonHelp;
+        private ToolStripSeparator toolStripSeparator9;
+        private ToolStripButton toolStripButtonBorderless;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripSeparator toolStripSeparator6;
