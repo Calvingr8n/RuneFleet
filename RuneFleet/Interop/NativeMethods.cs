@@ -19,6 +19,23 @@ namespace RuneFleet.Interop
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(nint hWnd, int nCmdShow);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern long GetWindowLong(nint hWnd, int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern long SetWindowLong(nint hWnd, int nIndex, long dwNewLong);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        public const int GWL_STYLE = -16;
+        public const uint WS_CAPTION = 0x00C00000;
+        public const uint WS_THICKFRAME = 0x00040000;
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOZORDER = 0x0004;
+        public const uint SWP_FRAMECHANGED = 0x0020;
+
         [DllImport("dwmapi.dll")]
         public static extern int DwmRegisterThumbnail(nint dest, nint src, out nint thumb);
 

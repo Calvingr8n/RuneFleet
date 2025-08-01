@@ -309,6 +309,12 @@ namespace RuneFleet
                 NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_DEL);
             }
         }
+
+        private void toolStripButtonBorderless_Click(object sender, EventArgs e)
+        {
+            clientService.BorderlessEnabled = toolStripButtonBorderless.Checked;
+            clientService.ApplyBorderlessToAll();
+        }
     }
 
 }
