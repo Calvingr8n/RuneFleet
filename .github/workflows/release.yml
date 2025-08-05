@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: windows-latest
@@ -13,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET 9 SDK
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
@@ -27,23 +30,14 @@ jobs:
       - name: Publish
         run: dotnet publish RuneFleet/RuneFleet.csproj --configuration Release --output ./publish --runtime win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          allUpdates: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Zip output
+        run: Compress-Archive -Path ./publish/* -DestinationPath RuneFleet.zip
 
-      - name: Upload RuneFleet.exe to Release
-        uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release with unique tag
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          allUpdates: true
+          tag: runefleet-${{ github.run_id }}
+          name: "RuneFleet Release ${{ github.run_number }}"
+          body: "Automated release triggered by push to master"
+          artifacts: "RuneFleet.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: RuneFleet.exe
-          asset_path: ./publish/RuneFleet.exe
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
