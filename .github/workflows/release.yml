@@ -3,7 +3,7 @@ name: Build and Release RuneFleet
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   release:
