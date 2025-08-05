@@ -33,7 +33,7 @@ jobs:
       - name: Zip output
         run: Compress-Archive -Path ./publish/* -DestinationPath RuneFleet.zip
 
-      - name: Create GitHub Release with unique tag
+      - name: Create GitHub Release with unique tag 
         uses: ncipollo/release-action@v1
         with:
           tag: runefleet-${{ github.run_id }}
