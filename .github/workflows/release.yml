@@ -19,13 +19,13 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Restore dependencies
-        run: dotnet restore RuneFleet.csproj
+        run: dotnet restore /RuneFleet/RuneFleet.csproj
 
       - name: Build
-        run: dotnet build RuneFleet.csproj --configuration Release --no-restore
+        run: dotnet build /RuneFleet/RuneFleet.csproj --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish RuneFleet.csproj --configuration Release --output ./publish --runtime win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish /RuneFleet/RuneFleet.csproj --configuration Release --output ./publish --runtime win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
