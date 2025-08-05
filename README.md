@@ -2,7 +2,7 @@
 A Windows application for managing and launching multiple game clients simultaneously. Features include live thumbnail previews, grouped account management, and streamlined multilogging control.
 
 ## Setup Guide
-1. Install .Net 9.0 from Microsoft. Linked [here](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-9.0.6-windows-x64-installer).
+1. Download the latest release from [here](https://github.com/Calvingr8n/RuneFleet/releases).
 2. Start RuneFleet
 3. Click Import
 4. Run your preferred client from the Jagex Launcher until it's fully loaded
@@ -10,7 +10,7 @@ A Windows application for managing and launching multiple game clients simultane
 
 https://github.com/user-attachments/assets/c6ddaeeb-e4d2-4e85-bcf2-ae72b6b4a520
 
-There is an example accounts.csv file in the repository. It shows the different configurations on groups, profile and RuneLite scale.
+There is an [example accounts.csv file in the repository](https://github.com/Calvingr8n/RuneFleet/blob/master/RuneFleet/example_accounts.csv). It shows the different configurations on groups, profile and RuneLite scale.
 
 ## Controls
 Account List:
