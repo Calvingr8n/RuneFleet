@@ -20,6 +20,7 @@
             listViewAccounts = new ListView();
             columnHeaderDisplayName = new ColumnHeader();
             columnHeaderPID = new ColumnHeader();
+            columnHeaderId = new ColumnHeader();
             flowPanelProcesses = new FlowLayoutPanel();
             groupSelection = new ComboBox();
             labelLoading = new Label();
@@ -43,7 +44,6 @@
             toolStripSeparator9 = new ToolStripSeparator();
             toolStripButtonBorderless = new ToolStripButton();
             toolStripSeparator7 = new ToolStripSeparator();
-            columnHeaderId = new ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)numericClientScale).BeginInit();
             toolStrip1.SuspendLayout();
             SuspendLayout();
@@ -74,6 +74,11 @@
             columnHeaderPID.Text = "Process";
             columnHeaderPID.Width = 55;
             // 
+            // columnHeaderId
+            // 
+            columnHeaderId.Text = "Id";
+            columnHeaderId.Width = 0;
+            // 
             // flowPanelProcesses
             // 
             flowPanelProcesses.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -89,7 +94,7 @@
             // 
             groupSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             groupSelection.FormattingEnabled = true;
-            groupSelection.Location = new Point(135, 322);
+            groupSelection.Location = new Point(211, 26);
             groupSelection.Name = "groupSelection";
             groupSelection.Size = new Size(88, 23);
             groupSelection.TabIndex = 6;
@@ -111,7 +116,7 @@
             // 
             numericClientScale.DecimalPlaces = 1;
             numericClientScale.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            numericClientScale.Location = new Point(168, 293);
+            numericClientScale.Location = new Point(395, 27);
             numericClientScale.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             numericClientScale.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             numericClientScale.Name = "numericClientScale";
@@ -168,12 +173,14 @@
             toolStripButtonHot.Size = new Size(23, 23);
             toolStripButtonHot.Text = "Hotkey";
             toolStripButtonHot.ToolTipText = "Enable or disable Hotkeys.";
+            toolStripButtonHot.Visible = false;
             toolStripButtonHot.Click += toolStripButtonHot_Click;
             // 
             // toolStripSeparator5
             // 
             toolStripSeparator5.Name = "toolStripSeparator5";
             toolStripSeparator5.Size = new Size(6, 25);
+            toolStripSeparator5.Visible = false;
             // 
             // toolStripButtonImport
             // 
@@ -259,33 +266,30 @@
             toolStripButtonHelp.Text = "Help";
             toolStripButtonHelp.ToolTipText = "Displays credits and assistance info.";
             toolStripButtonHelp.Click += toolStripButtonHelp_Click;
-            //
+            // 
             // toolStripSeparator9
-            //
+            // 
             toolStripSeparator9.Name = "toolStripSeparator9";
             toolStripSeparator9.Size = new Size(6, 25);
-            //
+            // 
             // toolStripButtonBorderless
-            //
+            // 
             toolStripButtonBorderless.CheckOnClick = true;
             toolStripButtonBorderless.DisplayStyle = ToolStripItemDisplayStyle.Text;
             toolStripButtonBorderless.ImageTransparentColor = Color.Magenta;
             toolStripButtonBorderless.Margin = new Padding(0, 1, 0, 1);
             toolStripButtonBorderless.Name = "toolStripButtonBorderless";
-            toolStripButtonBorderless.Size = new Size(72, 23);
+            toolStripButtonBorderless.Size = new Size(65, 23);
             toolStripButtonBorderless.Text = "Borderless";
             toolStripButtonBorderless.ToolTipText = "Toggle borderless mode for clients.";
+            toolStripButtonBorderless.Visible = false;
             toolStripButtonBorderless.Click += toolStripButtonBorderless_Click;
-            //
+            // 
             // toolStripSeparator7
-            //
+            // 
             toolStripSeparator7.Name = "toolStripSeparator7";
             toolStripSeparator7.Size = new Size(6, 25);
-            // 
-            // columnHeaderId
-            // 
-            columnHeaderId.Text = "Id";
-            columnHeaderId.Width = 0; // Hidden column for internal use
+            toolStripSeparator7.Visible = false;
             // 
             // MainForm
             // 

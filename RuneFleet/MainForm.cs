@@ -48,18 +48,23 @@ namespace RuneFleet
             flowPanelProcesses.Resize += flowPanelProcesses_Resize;
 
             // Handling the keybinds
+            // Disabled because it probably violates TOS. Also made button invisible
+            /*
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGDN, 0, (uint)Keys.PageDown);
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_PGUP, 0, (uint)Keys.PageUp);
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_DEL, 0, (uint)Keys.Delete);
+            */
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // removing the keybinds
+            // Disabled because it probably violates TOS. Also made button invisible
+            /*
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGDN);
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_PGUP);
             NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID_DEL);
-
+            */
             clientService.Dispose();
         }
 
@@ -156,7 +161,7 @@ namespace RuneFleet
         }
         */
 
-        // Handles the selection change in the group selection dropdown.
+            // Handles the selection change in the group selection dropdown.
         private void groupSelection_SelectedValueChanged(object sender, EventArgs e)
         {
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
@@ -287,10 +292,10 @@ namespace RuneFleet
 
         private void toolStripButtonHelp_Click(object sender, EventArgs e)
         {
-            //TODO open info window for credit
-            MessageBox.Show(".steakboy on Discord\r\n" +
-                            "Icons are from Those Icons, Chanut and Freepik at FlatIcons\r\n" +
-                            "Features from chronic0590",
+            MessageBox.Show("Released for free on GitHub.\r\n" +
+                            ".steakboy on Discord\r\n" +
+                            "Icons: 'Those Icons', 'Chanut' and 'Freepik' at FlatIcons\r\n" +
+                            "Features from chronic0590.",
                             "Credits", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
