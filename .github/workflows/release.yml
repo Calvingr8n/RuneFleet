@@ -40,6 +40,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
+          allUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
           name: RuneFleet.exe
           asset_path: ./publish/RuneFleet.exe
           asset_content_type: application/octet-stream
