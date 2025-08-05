@@ -1,5 +1,5 @@
 # RuneFleet
-A powerful Windows application for managing and launching multiple game clients simultaneously. Features include live thumbnail previews, client focus switching, grouped account management, and streamlined multilogging control.
+A powerful Windows application for managing and launching multiple game clients simultaneously. Features include live thumbnail previews, grouped account management, and streamlined multilogging control.
 
 ## Setup Guide
 [Multi-Jagex Account Management](https://docs.google.com/document/d/10yHEjgFybwfpKqmOX38gfjjoOIz1EVmRRq0nwYU73I8/edit?usp=sharing)
