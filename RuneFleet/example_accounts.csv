@@ -1,4 +1,4 @@
 ﻿JX_ACCESS_TOKEN,JX_REFRESH_TOKEN,JX_SESSION_ID,JX_DISPLAY_NAME,JX_CHARACTER_ID,Group,Client,Arguments
-,,,TheMain,,,%userprofile%\AppData\Local\RuneLite\runelite.exe,--profile=noSpaces --scale=0.8
+,,,Anything-NonJagexAccount,,,%userprofile%\AppData\Local\RuneLite\runelite.exe,--profile=noSpaces --scale=0.8
 ,,ImportFillsIn,JagexChar1,123456789,JagexAccount1;Crafter,%userprofile%\AppData\Local\RuneLite2\runelite.exe,--profile=craft --scale=1.0
 ,,ImportFillsIn2,JagexChar2,123456781,JagexAccount2;Merch,C:\Program Files (x86)\Jagex Launcher\Games\Old School RuneScape\Client\osclient.exe,
