@@ -7,6 +7,8 @@
         private System.Windows.Forms.ColumnHeader columnHeaderDisplayName;
         private System.Windows.Forms.ColumnHeader columnHeaderPID;
         private System.Windows.Forms.FlowLayoutPanel flowPanelProcesses;
+        private System.Windows.Forms.ContextMenuStrip contextMenuAccounts;
+        private System.Windows.Forms.ToolStripMenuItem editAccountToolStripMenuItem;
 
         protected override void Dispose(bool disposing)
         {
@@ -22,6 +24,8 @@
             columnHeaderPID = new ColumnHeader();
             columnHeaderId = new ColumnHeader();
             flowPanelProcesses = new FlowLayoutPanel();
+            contextMenuAccounts = new ContextMenuStrip(components);
+            editAccountToolStripMenuItem = new ToolStripMenuItem();
             groupSelection = new ComboBox();
             labelLoading = new Label();
             numericClientScale = new NumericUpDown();
@@ -49,7 +53,7 @@
             SuspendLayout();
             // 
             // listViewAccounts
-            // 
+            //
             listViewAccounts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             listViewAccounts.Columns.AddRange(new ColumnHeader[] { columnHeaderDisplayName, columnHeaderPID, columnHeaderId });
             listViewAccounts.FullRowSelect = true;
@@ -63,6 +67,21 @@
             listViewAccounts.ItemActivate += listViewAccounts_ItemActivate;
             listViewAccounts.Click += listViewAccounts_ItemActivate;
             listViewAccounts.DoubleClick += buttonLaunchSelected_Click;
+            listViewAccounts.ContextMenuStrip = contextMenuAccounts;
+            listViewAccounts.MouseDown += listViewAccounts_MouseDown;
+
+            // contextMenuAccounts
+            //
+            contextMenuAccounts.Items.AddRange(new ToolStripItem[] { editAccountToolStripMenuItem });
+            contextMenuAccounts.Name = "contextMenuAccounts";
+            contextMenuAccounts.Size = new Size(181, 48);
+
+            // editAccountToolStripMenuItem
+            //
+            editAccountToolStripMenuItem.Name = "editAccountToolStripMenuItem";
+            editAccountToolStripMenuItem.Size = new Size(180, 22);
+            editAccountToolStripMenuItem.Text = "Edit Account";
+            editAccountToolStripMenuItem.Click += editAccountToolStripMenuItem_Click;
             // 
             // columnHeaderDisplayName
             // 

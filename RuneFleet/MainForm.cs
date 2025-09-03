@@ -1,5 +1,6 @@
 ﻿using RuneFleet.Interop;
 using RuneFleet.Services;
+using RuneFleet.Models;
 using System.Windows.Forms;
 
 namespace RuneFleet
@@ -80,6 +81,7 @@ namespace RuneFleet
                 var item = new ListViewItem(acc.DisplayName);
                 item.SubItems.Add(acc.Pid?.ToString() ?? "");
                 item.SubItems.Add(acc.CharacterId?.ToString() ?? "");
+                item.Tag = acc;
                 if (group == "All" || (acc.Group != null && acc.Group.Contains(group)))
                 {
                     listViewAccounts.Items.Add(item);
@@ -131,6 +133,38 @@ namespace RuneFleet
                 }
             }
             UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+        }
+
+        private void listViewAccounts_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var item = listViewAccounts.GetItemAt(e.X, e.Y);
+                if (item != null)
+                {
+                    listViewAccounts.SelectedItems.Clear();
+                    item.Selected = true;
+                }
+            }
+        }
+
+        private void editAccountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewAccounts.SelectedItems.Count == 0) return;
+            if (listViewAccounts.SelectedItems[0].Tag is not Account acc) return;
+            using var editForm = new EditAccountForm(acc);
+            if (editForm.ShowDialog(this) == DialogResult.OK)
+            {
+                var pids = accountManager.Accounts.Select(a => a.Pid).ToList();
+                accountManager.Save("accounts.csv");
+                accountManager.Load("accounts.csv");
+                for (int i = 0; i < accountManager.Accounts.Count && i < pids.Count; i++)
+                {
+                    accountManager.Accounts[i].Pid = pids[i];
+                }
+                UpdateGroupView();
+                UpdateListView(groupSelection.SelectedItem?.ToString() ?? "All");
+            }
         }
 
 

@@ -18,6 +18,15 @@ namespace RuneFleet.Services
             Accounts = LoadFromCsv(path);
         }
 
+        public void Save(string path)
+        {
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture);
+            using var writer = new StreamWriter(path);
+            using var csv = new CsvWriter(writer, config);
+            csv.Context.RegisterClassMap<AccountMap>();
+            csv.WriteRecords(Accounts);
+        }
+
         private static List<Account> LoadFromCsv(string path)
         {
             try
